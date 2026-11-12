@@ -390,6 +390,47 @@ function runSummary(ok){
  if(firstAtHome&&!atHomeForce)return note('판정 보류','홈은 포스아웃이 아니므로 태그 및 주자 도착 판정 필요');
  return note('판정 보류','3루 주자의 홈 출발 여부와 득점 시점이 지정되지 않음');
 }
+
+function detailedBaseballExplanation(s){
+ const b=s.bases, n=s.outs, one=b.includes(1),two=b.includes(2),three=b.includes(3), loaded=one&&two&&three;
+ const f=one&&two, homeForce=loaded;
+ const lines=['【상황별 야구 규칙 해설】','현재 '+n+'아웃 · '+(b.length?b.join('·')+'루 주자':'주자 없음')+' · '+(s.type==='ground'?'땅볼':s.type==='fly'?'뜬공':'안타성 타구')+'.'];
+ if(s.type==='ground'){
+  lines.push('① 기본 판단: 타자주자는 1루에 도달해야 하므로 1루에서 공을 먼저 잡으면 타자주자를 아웃시킬 수 있습니다. 단, 실제 아웃은 주자보다 공이 먼저 도착해야 성립합니다.');
+  if(one)lines.push('② 2루 승부: 1루 주자는 타자주자 때문에 2루로 강제 진루합니다. 2루를 커버한 야수가 주자보다 먼저 공을 확보하면 포스아웃입니다.'+(n<2?' 이후 1루 송구로 병살을 시도할 수 있습니다.':' 2아웃이라면 이것으로 이닝이 끝납니다.'));
+  else lines.push('② 2루 승부: 1루에 주자가 없어 2루 포스아웃은 성립하지 않습니다. 2루 주자가 베이스를 벗어났다면 공을 가진 야수의 직접 태그 또는 적법한 귀루 플레이로 아웃을 시도할 수 있지만, 단순히 2루를 밟는 것만으로는 아웃이 아닙니다.');
+  if(f)lines.push('③ 3루 승부: 1·2루에 주자가 연속해 있어 2루 주자는 3루로 강제 진루합니다. 3루에서 주자보다 먼저 공을 잡고 베이스를 밟으면 포스아웃입니다.');
+  else if(two)lines.push('③ 3루 승부: 2루 주자는 3루로 강제 진루하지 않습니다. 실제로 3루로 뛰는 경우에도 3루 베이스만 밟아서는 아웃이 아니며 주자 태그가 필요합니다.');
+  else lines.push('③ 3루 승부: 3루로 이동하는 주자가 없다면 일반적으로 3루 송구보다 1루 아웃 확보가 유리합니다.');
+  if(homeForce)lines.push('④ 홈 승부: 만루이므로 3루 주자는 홈으로 강제 진루합니다. 포수가 공을 갖고 홈을 먼저 밟으면 포스아웃입니다. 홈→1루 병살은 득점을 막는 유력한 선택이지만 타구·송구 속도에 따라 성공 여부가 달라집니다.');
+  else if(three)lines.push('④ 홈 승부: 만루가 아니므로 3루 주자는 홈으로 강제 진루하지 않습니다. 홈에서 아웃시키려면 주자를 태그해야 합니다. 홈으로 뛰지 않으면 홈 송구는 불필요할 수 있습니다.');
+  else lines.push('④ 홈 승부: 3루 주자가 없어 일반적으로 즉시 홈 송구할 이유가 없습니다.');
+  if(n===2)lines.push('⑤ 병살 판단: 이미 2아웃이므로 아웃 하나를 확실히 잡으면 이닝 종료입니다. 무리한 선행주자 승부보다 확실한 아웃을 우선합니다.');
+  else if(one)lines.push('⑤ 병살 판단: 2루 포스아웃→1루 송구가 가능한지 확인합니다. 타구가 느리거나 송구 전환이 늦으면 한 명만 아웃될 수 있습니다.');
+  else if(two||three)lines.push('⑤ 병살 판단: 1루 주자가 없으므로 2루→1루의 일반적인 포스 병살은 성립하지 않습니다. 선행주자를 태그로 잡거나 귀루 플레이에 성공한 뒤 1루까지 잡아야 병살입니다.');
+  else lines.push('⑤ 병살 판단: 주자가 없으므로 통상 1루에서 타자주자 한 명을 아웃시키는 플레이입니다.');
+  if(three){if(n===1)lines.push('⑥ 득점: 두 번째 아웃이 이닝의 세 번째 아웃이고 그 아웃이 포스아웃 또는 타자주자의 1루 도달 전 아웃이면 홈을 먼저 밟았어도 득점은 무효입니다.');else lines.push('⑥ 득점: 3루 주자가 홈을 밟는지 확인합니다. 만루에서 2루→1루 병살은 통상 1실점이지만 홈에서 3루 주자를 먼저 포스아웃시키면 0실점으로 막을 수 있습니다.');}
+  else lines.push('⑥ 득점: 3루에 주자가 없으므로 이 땅볼 하나만으로 득점을 확정할 수 없습니다. 추가 송구 실책·주자 이동은 별도 판단합니다.');
+ }else if(s.type==='fly'){
+  lines.push('① 포구: 타구가 땅에 닿기 전 정당하게 포구하면 타자 아웃입니다.');
+  if(n===2)lines.push('② 2아웃 포구: 세 번째 아웃으로 즉시 이닝 종료입니다. 주자의 홈 도착과 관계없이 그 플레이에서 득점은 없습니다.');
+  else if(b.length)lines.push('② 태그업: 주자는 포구 전 원래 베이스를 떠났다면 재터치해야 합니다. 포구 후 베이스를 밟고 진루할 수 있으며, 수비는 송구로 어필아웃 또는 다음 베이스 태그아웃을 노릴 수 있습니다.');
+  else lines.push('② 주자 없음: 포구하면 타자 아웃 하나가 기록되고 추가 송구는 보통 필요하지 않습니다.');
+  if(three&&n<2)lines.push('③ 3루 주자: 깊은 외야 플라이라면 태그업 득점이 가능하지만 얕은 플라이면 홈에서 태그아웃될 위험이 큽니다. 포구 위치와 송구·주자 속도에 따라 결정됩니다.');
+  else if(two&&n<2)lines.push('③ 2루 주자: 태그업 후 3루 진루를 시도할 수 있습니다. 3루 송구가 빠르면 태그아웃이 가능하지만 무조건 아웃은 아닙니다.');
+  else lines.push('③ 추가 진루: 실제 주자 출발과 송구 도착 시각을 비교해야 합니다.');
+ }else{
+  lines.push('① 안타 처리: 땅에 떨어진 안타는 타자를 포구 아웃으로 처리할 수 없습니다. 공을 빠르게 회수해 선행주자 진루와 추가 실점을 줄입니다.');
+  lines.push('② 중계 송구: 내야 중계수에게 던지는 것은 홈·3루 등으로 공을 다시 연결하는 플레이입니다. 2루 베이스를 커버하는 야수에게 던져 2루 진루 주자를 태그하는 플레이와 목적이 다릅니다.');
+  if(three||two)lines.push('③ 득점·홈 승부: '+(three?'3루 주자는 안타에 홈으로 들어올 가능성이 큽니다. ':'2루 주자가 홈으로 뛰는지는 타구 방향·주력에 따라 다릅니다. ')+'홈 송구로 아웃시키려면 주자보다 공이 먼저 도착하고 포수가 태그해야 합니다.');
+  else lines.push('③ 주자 견제: 2루 진루를 시도하는 타자주자나 선행주자를 막도록 적절한 베이스로 송구합니다.');
+  if(one)lines.push('④ 1루 주자: 타구 위치와 주력에 따라 2루 또는 3루까지 진루할 수 있습니다. 주자의 진로와 중계 위치를 확인합니다.');
+  lines.push('⑤ 주의: 안타 이후 아웃·세이프·득점은 실제 주자 출발과 송구 도착 시각이 없으면 확정할 수 없습니다.');
+ }
+ lines.push('※ 이 해설은 상황별 포스 관계와 기본 수비 원칙을 설명합니다. 현재 게임의 모든 송구 선택에 대한 실제 아웃·세이프 계산을 새로 구현한 것은 아닙니다.');
+ return lines.join('\n');
+}
+
 function explainMyChoice(ok){
  const first=plays[0]||'', selected=log.join(' → '), has1=sc.bases.includes(1),has2=sc.bases.includes(2),has3=sc.bases.includes(3);
  const reason=[];
@@ -410,7 +451,7 @@ function explainMyChoice(ok){
  if(sc.id===148){reason.push('상황 #148 핵심: 1사 2루에서는 2루 주자가 3루로 갈 의무가 없습니다. 유격수의 1루 송구가 기본이며, 3루 승부는 주자가 실제로 뛰고 있고 태그아웃이 가능한 경우에만 조건부로 타당합니다.');}
  return '【내 선택 판단 이유】\n'+reason.join('\n');
 }
-function end(ok,msg){cancelAnimationFrame(raf);cancelAnimationFrame(motionRaf);phase='done';if(started){const remain=Math.max(0,10-(performance.now()-started)/1000);$('clock').textContent='⏱ '+remain.toFixed(1)+'초';$('meter').style.width=(remain*10)+'%';}actions([]);$('result').hidden=false;let result=ok?((sc.id>=31&&sc.id<=33||sc.homeDecision)?(mode==='advanced'?homeDecisionResult():(plays.includes('HOME')?((sc.id===31||sc.runnerBehavior==='charge')?'홈 태그아웃 시도 (성공 여부는 주자 도착에 따름)':'주자 미진루 · 홈 송구 불필요'):'1루 아웃 시도')):mode==='advanced'?timing():sc.type==='fly'?'플라이 아웃':sc.type==='hit'?'안타 수비 완료':sc.expected==='double'?(activeRoute.length===1?'1루 아웃 수비 완료':activeRoute[0]==='1TOUCH'?'1루 아웃 후 추가 송구':'병살 수비 시도 완료'):'아웃 수비 성공'):'수비 실패';$('resultTitle').textContent=result;$('resultTitle').style.color=ok?'#d8f268':'#ffb4aa';$('resultText').textContent=msg+(ok&&mode==='advanced'?' · 주루 속도와 송구 시간을 적용한 교육용 판정입니다.':'')+(sc.review&&sc.review.judgment==='조건부'?' · AI 검증: 조건부 상황입니다. 주자 속도·송구 타이밍에 따라 아웃 수가 달라질 수 있습니다.':'');$('choiceReason').textContent=explainMyChoice(ok);$('runsSummary').textContent='【이번 플레이 실점 여부】\n'+runSummary(ok);$('answer').textContent='【정답 및 해설】\n'+model();$('userMoves').textContent='【내 선택】\n'+(log.map((entry,i)=>entry+(scoreAwards[i]?' (+'+scoreAwards[i]+'점)':' (0점)')).join(' → ')||'없음');$('result').scrollTop=0;$('headline').textContent='상황 #'+sc.id+' 종료';$('prompt').textContent='모범 답안을 확인하세요.';updateHeader();draw()}
+function end(ok,msg){cancelAnimationFrame(raf);cancelAnimationFrame(motionRaf);phase='done';if(started){const remain=Math.max(0,10-(performance.now()-started)/1000);$('clock').textContent='⏱ '+remain.toFixed(1)+'초';$('meter').style.width=(remain*10)+'%';}actions([]);$('result').hidden=false;let result=ok?((sc.id>=31&&sc.id<=33||sc.homeDecision)?(mode==='advanced'?homeDecisionResult():(plays.includes('HOME')?((sc.id===31||sc.runnerBehavior==='charge')?'홈 태그아웃 시도 (성공 여부는 주자 도착에 따름)':'주자 미진루 · 홈 송구 불필요'):'1루 아웃 시도')):mode==='advanced'?timing():sc.type==='fly'?'플라이 아웃':sc.type==='hit'?'안타 수비 완료':sc.expected==='double'?(activeRoute.length===1?'1루 아웃 수비 완료':activeRoute[0]==='1TOUCH'?'1루 아웃 후 추가 송구':'병살 수비 시도 완료'):'아웃 수비 성공'):'수비 실패';$('resultTitle').textContent=result;$('resultTitle').style.color=ok?'#d8f268':'#ffb4aa';$('resultText').textContent=msg+(ok&&mode==='advanced'?' · 주루 속도와 송구 시간을 적용한 교육용 판정입니다.':'')+(sc.review&&sc.review.judgment==='조건부'?' · AI 검증: 조건부 상황입니다. 주자 속도·송구 타이밍에 따라 아웃 수가 달라질 수 있습니다.':'');$('choiceReason').textContent=explainMyChoice(ok);$('runsSummary').textContent='【이번 플레이 실점 여부】\n'+runSummary(ok);$('answer').textContent='【정답 및 해설】\n'+model()+'\n\n'+detailedBaseballExplanation(sc);$('userMoves').textContent='【내 선택】\n'+(log.map((entry,i)=>entry+(scoreAwards[i]?' (+'+scoreAwards[i]+'점)':' (0점)')).join(' → ')||'없음');$('result').scrollTop=0;$('headline').textContent='상황 #'+sc.id+' 종료';$('prompt').textContent='모범 답안을 확인하세요.';updateHeader();draw()}
 const baseOrders=[[],[1],[2],[3],[1,2],[1,3],[2,3],[1,2,3]];
 const baseIndex=b=>baseOrders.findIndex(a=>a.length===b.length&&a.every(v=>b.includes(v)));
 const positionOrder={P:0,'1B':1,'2B':2,'3B':3,SS:4,LF:5,CF:6,RF:7};
@@ -423,4 +464,4 @@ $('start').onclick=setup;$('go').onclick=begin;$('next').onclick=setup;
 let deferred=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('install').style.display='block'});$('install').onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;$('install').style.display='none'};
 
 draw();})();
-</script><script>if(location.protocol==='https:'&&'serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script><script>(function(){const el=document.getElementById('teamTheme');const themes=['default','kt','samsung','kia','lg','doosan','ssg','hanwha','nc','lotte','kiwoom'];let saved='default';try{saved=localStorage.getItem('baseball-team-theme')||'default'}catch(e){}function apply(v){if(!themes.includes(v))v='default';el.value=v;document.body.dataset.team=v;const colors={default:'#091b1b',kt:'#08090b',samsung:'#061a40',kia:'#26090c',lg:'#f6f6f6',doosan:'#071327',ssg:'#29090d',hanwha:'#291509',nc:'#071626',lotte:'#071529',kiwoom:'#250915'};document.querySelector('meta[name="theme-color"]').setAttribute('content',colors[v]);try{localStorage.setItem('baseball-team-theme',v)}catch(e){}}el.addEventListener('change',()=>apply(el.value));apply(saved)})();</script><div id="themeVersionTag" style="text-align:center;padding:6px 0 14px;font-size:11px;color:#999">테마 가독성 개선 v16 · 불투명 패널</div></body></html>
+</script><script>if(location.protocol==='https:'&&'serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script><script>(function(){const el=document.getElementById('teamTheme');const themes=['default','kt','samsung','kia','lg','doosan','ssg','hanwha','nc','lotte','kiwoom'];let saved='default';try{saved=localStorage.getItem('baseball-team-theme')||'default'}catch(e){}function apply(v){if(!themes.includes(v))v='default';el.value=v;document.body.dataset.team=v;const colors={default:'#091b1b',kt:'#08090b',samsung:'#061a40',kia:'#26090c',lg:'#f6f6f6',doosan:'#071327',ssg:'#29090d',hanwha:'#291509',nc:'#071626',lotte:'#071529',kiwoom:'#250915'};document.querySelector('meta[name="theme-color"]').setAttribute('content',colors[v]);try{localStorage.setItem('baseball-team-theme',v)}catch(e){}}el.addEventListener('change',()=>apply(el.value));apply(saved)})();</script><div id="themeVersionTag" style="text-align:center;padding:6px 0 14px;font-size:11px;color:#999">상황별 규칙 해설 v17 · 불투명 패널</div></body></html>
