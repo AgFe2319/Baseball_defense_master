@@ -218,7 +218,7 @@ for(const s of window.SCENARIOS){
   if(AI_REVIEW[s.id]){AI_REVIEW[s.id].judgment='재검토·조건부';AI_REVIEW[s.id].reason=why;AI_REVIEW[s.id].route=[...s.route];AI_REVIEW[s.id].timing='주자 위치, 타구 깊이, 야수의 송구 타이밍에 따라 복수 선택 허용';}
 }
 window.AUDIT_CHANGES=AUDIT_CHANGES;
-document.documentElement.dataset.gameVersion='v37';
+document.documentElement.dataset.gameVersion='v38';
 const S=window.SCENARIOS, names={P:'투수',C:'포수','1B':'1루수','2B':'2루수','3B':'3루수',SS:'유격수',LF:'좌익수',CF:'중견수',RF:'우익수'};
 S.forEach(x=>{const r=AI_REVIEW[String(x.id)];if(r){x.review=r;x.route=[...r.route];x.expected=r.expected;}});
 // v31 FINAL relay normalization: must run AFTER AI_REVIEW has overwritten routes.
@@ -390,6 +390,17 @@ function tapPlayer(id){
  if(!candidates.length){$('feedback').textContent=names[id]+'에게 송구하는 동작은 이 상황에 구현되어 있지 않습니다.';return;}
  // Do not conflate a cutoff relay with a throw to a base cover player.
  const available=alternativesForDirect().filter(a=>candidates.includes(a)).filter(a=>!(sc.type==='hit'&&step===0&&id==='3B'&&a==='3BASE'));
+ if(sc.type==='fly'&&step===0&&flyThrowChoices().length){
+   const permitted=flyThrowChoices().filter(a=>candidates.includes(a));
+   if(permitted.length){
+     const preferred=(id==='2B'&&sc.bases.includes(2))?'2B':(id==='SS'&&sc.bases.includes(2))?'2SS':permitted[0];
+     const action=permitted.includes(preferred)?preferred:permitted[0];
+     if(mode==='intermediate'){chooseAction(action);return;}
+     $('prompt').textContent=names[id]+'에게 어떤 목적으로 송구할까요?';
+     actions(permitted.map(a=>[label[a]+' · '+(a==='2B'||a==='2SS'?'귀루 어필/커버':a.startsWith('CUT')?'중계':'태그업 대응'),()=>chooseAction(a)]).concat([['↩ 야수 다시 선택',()=>showActions()]]));
+     return;
+   }
+ }
  if(sc.type==='hit'&&['LF','CF','RF'].includes(sc.fielder)&&step===0&&['SS','2B'].includes(id)){
    // The cutoff fielder relays toward home; the other middle infielder covers second.
    const cutoff=sc.fielder==='RF'?'2B':'SS';
@@ -417,6 +428,25 @@ function tapPlayer(id){
 // v37: A direct throw to a base is distinct from a relay to a cutoff player.
 // It is a legitimate defensive choice, not a guaranteed out. R2 may try third;
 // R3 may try home. Real tag and arrival timing remain conditional.
+// v38: Fly-ball throws are evaluated by runner occupancy and actual purpose.
+// A throw is a defensible decision, not an automatic tag/appeal out.
+function flyThrowChoices(){
+ if(!sc||sc.type!=='fly'||!['LF','CF','RF'].includes(sc.fielder)||sc.outs>=2||!sc.bases.length)return [];
+ const primary=sc.fielder==='RF'?'CUT2':'CUTSS';
+ const opts=[primary,'HOLD'];
+ if(sc.bases.includes(2))opts.push('2B','2SS','3B');
+ if(sc.bases.includes(1))opts.push('1B','2B','2SS');
+ if(sc.bases.includes(3))opts.push('HOME');
+ return [...new Set(opts)];
+}
+function flyThrowExplanation(a){
+ if(a==='3B')return '3루 직접 송구: 2루 주자가 정상 태그업해 3루로 뛰는 경우 3루에서 주자를 태그해야 아웃입니다. 진루하지 않았다면 견제 목적입니다.';
+ if(a==='HOME')return '홈 직접 송구: 3루 주자가 포구 후 태그업해 홈으로 뛰는 경우 포수가 주자를 태그해야 합니다. 득점 여부는 타이밍에 따릅니다.';
+ if(a==='2B'||a==='2SS')return '2루 송구: 2루 주자의 조기 출발 후 미귀루에 대한 어필 또는 2루 커버·중계입니다. 주자가 정상 태그업했다면 베이스 터치만으로 아웃이 아닙니다.';
+ if(a==='1B')return '1루 송구: 1루 주자의 조기 출발 후 미귀루에 대한 어필 또는 귀루 견제입니다. 2루 주자만 있을 때의 우선 송구는 아닙니다.';
+ if(a==='CUT2'||a==='CUTSS')return '중계 송구: 외야에서 내야 중계수로 연결해 태그업 진루를 억제하거나 다음 베이스로 송구합니다. 중계 자체가 주자 아웃은 아닙니다.';
+ return '안전하게 내야로 공을 돌려 추가 진루를 억제합니다. 태그업 주자의 실제 움직임을 확인해야 합니다.';
+}
 function outfieldDirectChoices(){
  if(!sc || sc.type!=='hit' || !['LF','CF','RF'].includes(sc.fielder))return [];
  const result=[];
@@ -431,7 +461,7 @@ function outfieldDirectExplanation(a){
 }
 function alternativesForDirect(){
  if(sc.id===85&&step===0)return ['3B','2SS','CUTSS','HOLD'];
- if(step===0&&isLoadedInfield())return loadedFirstChoices();
+ if(step===0&&sc.type==='fly'&&flyThrowChoices().length){const opts=flyThrowChoices();return [...new Set([sc.bases.includes(2)?'2B':sc.bases.includes(3)?'HOME':sc.bases.includes(1)?'1B':opts[0],sc.bases.includes(2)?'3B':opts[0],sc.fielder==='RF'?'CUT2':'CUTSS','HOLD'])].slice(0,4)}if(step===0&&isLoadedInfield())return loadedFirstChoices();
  return [...new Set([activeRoute[step],...(step===0&&sc.acceptableFirst?sc.acceptableFirst:[]),'HOME','3B','3BASE','2SS','2B','1B','1P','CUTSS','CUT2','CUT1','2BASE','1TOUCH','3TOUCH','HOLD'])].filter(Boolean);
 }
 function updateThrowMode(){
@@ -445,7 +475,7 @@ function setThrowMode(v){throwInputMode=v;localStorage.setItem('baseball-throw-m
 $('choiceMode').onclick=()=>selectDifficulty('normal');
 $('directMode').onclick=()=>selectDifficulty(mode==='normal'?'intermediate':mode);
 updateThrowMode();
-function chooseFielder(id){if(phase!=='field')return; if(sc.type==='hit'&&['LF','CF','RF'].includes(sc.fielder)){const relay=sc.fielder==='RF'?'CUT2':'CUTSS';activeRoute=[relay];sc.acceptableFirst=[relay,sc.fielder==='RF'?'2SS':'2B',...outfieldDirectChoices(),'HOLD'];}elapsed=(performance.now()-started)/1000;if(id!==sc.fielder){log.push(names[id]+' 선택');end(false,'타구 처리 수비수를 잘못 선택했습니다.');return}holder=id;ball=null;if(!relayStart)relayStart=performance.now();log.push(names[id]+' 포구');if(sc.catchBranches){phase='catch';$('prompt').textContent='포구 방향에 따라 송구 경로가 달라집니다.';actions([['🧤 포핸드 포구',()=>chooseCatch('fore')],['🧤 백핸드 포구',()=>chooseCatch('back')]]);}else if(['P','1B','2B','3B','SS'].includes(id)){catchChoice='auto';log.push('자동 포구');award(5);phase='action';if((sc.id>=31&&sc.id<=33)||sc.homeDecision)homePlayActions();else showActions();}else{award(10);if(sc.type==='fly'){outsMade=1;log.push('타자 플라이 아웃')}phase='action';if(!sc.route.length){end(true,'플라이 포구로 타자 아웃. 송구 불필요.');return}showActions()}updateHeader();draw()}
+function chooseFielder(id){if(phase!=='field')return; if(sc.type==='hit'&&['LF','CF','RF'].includes(sc.fielder)){const relay=sc.fielder==='RF'?'CUT2':'CUTSS';activeRoute=[relay];sc.acceptableFirst=[relay,sc.fielder==='RF'?'2SS':'2B',...outfieldDirectChoices(),'HOLD'];}elapsed=(performance.now()-started)/1000;if(id!==sc.fielder){log.push(names[id]+' 선택');end(false,'타구 처리 수비수를 잘못 선택했습니다.');return}holder=id;ball=null;if(!relayStart)relayStart=performance.now();log.push(names[id]+' 포구');if(sc.catchBranches){phase='catch';$('prompt').textContent='포구 방향에 따라 송구 경로가 달라집니다.';actions([['🧤 포핸드 포구',()=>chooseCatch('fore')],['🧤 백핸드 포구',()=>chooseCatch('back')]]);}else if(['P','1B','2B','3B','SS'].includes(id)){catchChoice='auto';log.push('자동 포구');award(5);phase='action';if((sc.id>=31&&sc.id<=33)||sc.homeDecision)homePlayActions();else showActions();}else{award(10);if(sc.type==='fly'){outsMade=1;log.push('타자 플라이 아웃')}phase='action';if(sc.type==='fly'&&flyThrowChoices().length){activeRoute=[sc.fielder==='RF'?'CUT2':'CUTSS'];sc.acceptableFirst=flyThrowChoices();}if(!activeRoute.length){end(true,'플라이 포구로 타자 아웃. 송구 불필요.');return}showActions()}updateHeader();draw()}
 function chooseCatch(c){if(phase!=='catch')return;catchChoice=c;log.push(c==='fore'?'포핸드':'백핸드');activeRoute=[...sc.catchBranches[c]];award(5);phase='action';$('feedback').textContent=(c==='fore'?'포핸드':'백핸드')+' 선택 · 권장 첫 동작: '+label[activeRoute[0]]+' · 이제 송구를 판단하세요.';showActions()}
 function isLoadedInfield(){return sc && sc.type==='ground' && sc.outs<2 && [1,2,3].every(b=>sc.bases.includes(b)) && ['P','1B','2B','3B','SS'].includes(sc.fielder)}
 function loadedFirstChoices(){return ['HOME','3BASE','2B','2SS','1B'].filter(a=>a!=='2B'||sc.fielder!=='2B').filter(a=>a!=='2SS'||sc.fielder==='2B');}
@@ -480,6 +510,10 @@ function chooseAction(a){if(phase!=='action')return;
    }
  }
 
+ if(step===0&&sc.type==='fly'&&flyThrowChoices().length&&flyThrowChoices().includes(a)){
+   activeRoute=[a];log.push(label[a]);plays.push(a);award(10);step=1;
+   end(true,flyThrowExplanation(a));return;
+ }
  if(sc.id===85&&step===0){
    const accepted=['3B','2SS','CUTSS','HOLD'];
    if(accepted.includes(a)){
@@ -554,7 +588,7 @@ function finishHomeTag(tag){
  if(tag){log.push('포수 주자 태그');plays.push('TAG');award(10);end(true,(sc.id===31||sc.runnerBehavior==='charge')?'홈 태그 승부를 선택했습니다. 주자 도착시간에 따라 아웃·세이프가 달라집니다.':'주자가 홈에 오지 않았습니다. 홈에서 태그아웃할 수 없습니다.');}
  else{log.push('홈 베이스만 밟기');end(false,'만루가 아닌 홈 승부에서는 포수가 홈 베이스만 밟아서는 아웃되지 않습니다. 주자를 직접 태그해야 합니다.');}
 }
-function model(){if(sc.type==='hit'&&plays.length&&outfieldDirectChoices().includes(plays[0]))return '① '+names[sc.fielder]+' 외야 안타 타구 처리\n② '+label[plays[0]]+' (중계수 생략)\n'+outfieldDirectExplanation(plays[0])+'\n※ 중계 송구와 직접 송구는 모두 가능한 선택이며, 직접 송구가 자동 아웃을 의미하지는 않습니다.';if(sc.type==='hit'&&['LF','CF','RF'].includes(sc.fielder)&&plays.length&&['CUTSS','CUT2','2SS','2B'].includes(plays[0])){const a=plays[0];return '① '+names[sc.fielder]+' 안타 타구 처리\n② '+label[a]+'\n'+(a.startsWith('CUT')?'중계 야수에게 송구해 홈·다른 베이스로 연결하는 선택입니다.':'2루 커버 야수에게 송구해 추가 진루를 저지하는 선택입니다. 실제 아웃은 주자의 진루 및 태그 타이밍에 따라 달라집니다.')+'\n※ 중계 송구와 2루 커버 송구 모두 상황에 따라 정답으로 인정합니다.';}if(sc.homeAlternative && plays.includes('HOME'))return '① '+names[sc.fielder]+' 땅볼 포구\n② 3루 주자가 홈으로 뛰는 것을 확인\n③ 포수에게 홈 송구 후 주자 태그 시도(홈 포스아웃 아님)\n④ 1루 송구도 복수 정답으로 인정\n※ 태그 성공 여부는 공과 주자의 실제 도착시간에 따라 달라집니다.';if(sc.id===85)return '① 중견수 플라이 포구 → 타자 아웃(2아웃)\n② 3루 송구: 2루 주자의 태그업 진루 저지. 정상 태그업 주자는 3루에서 태그해야 아웃\n③ 2루 송구: 조기 출발 후 귀루하지 않은 주자에 대한 어필 플레이\n④ 내야 중계: 주자 움직임을 확인하고 3루 등으로 연결\n※ 3루 송구만으로 자동 아웃이 되지 않으며, 주자의 실제 움직임과 공 도착 시각에 따라 판정합니다.';let intro=names[sc.fielder]+' '+(sc.catchBranches?'포구 방향에 따른 송구 분기':sc.catchStyle==='auto'?(sc.type==='fly'?'플라이 포구':'안타성 타구 처리'):(sc.catchStyle==='fore'?'포핸드':'백핸드')+' 포구');let lines=['① '+intro];activeRoute.forEach((a,i)=>lines.push((i+2)+'단계 · '+label[a]));if(sc.type==='fly')lines.push('결과 · 포구 성공 시 타자 아웃 확정');else if(sc.type==='hit')lines.push('결과 · 안타, 추가 진루는 별도 판단');else lines.push('목표 · '+(sc.expected==='double'?'병살 시도':'타자주자 아웃 시도'));if(sc.id===25)lines.push('분기 · 포핸드 → 2루 포스아웃 → 1루 병살 시도 / 백핸드 → 3루 포스아웃 → 1루 병살 시도. 실제 가능 여부는 타구 위치와 주자 도착시간에 따라 달라집니다.');if(sc.id>=26&&sc.id<=30){lines.push('정면 땅볼은 안정적인 정면 포구가 기본입니다. 포핸드·백핸드는 타구가 좌우로 치우칠 때만 선택하는 포구 기술이며 병살의 필수 조건이 아닙니다.');lines.push('포구 후에는 주자 위치, 아웃카운트, 베이스 커버, 송구 타이밍을 보고 선행주자 포스아웃과 1루 송구를 판단합니다.');if(sc.id===27)lines.push('2루수 정면 땅볼 · 1루 주자 포스아웃을 위해 유격수에게 송구한 뒤 1루로 연결하면 4-6-3 병살을 시도할 수 있습니다.');}if(sc.id===10)lines.push('대안 · 3루수의 2루 송구 → 1루 송구도 가능(상황에 따라 판단)');if(sc.id===20)lines.push('대안 · 3루 직접 송구도 상황에 따라 가능');if(sc.id===21)lines.push('대안 · 2루 직접 송구도 가능');if(sc.id===24)lines.push('주의 · 홈 승부보다 추가 진루 억제가 일반적으로 유리');if(isLoadedInfield())lines.push('만루 추가 선택지 · 홈 송구(3루 주자 포스아웃), 3루 송구(2루 주자 포스아웃), 2루 송구(1루 주자 포스아웃), 1루 송구(타자주자 아웃). 첫 선택에 따라 후속 1루 송구 가능.');if((sc.id>=31&&sc.id<=33)||sc.homeDecision){lines.length=0;lines.push('① 투수가 땅볼 포구');lines.push('② 3루 주자 움직임 확인: '+((sc.id===31||sc.runnerBehavior==='charge')?'홈 쇄도':sc.id===32?'3루 정지':'3루 귀루'));lines.push('③ 홈 쇄도 시: 투수 → 포수 홈 송구 → 포수가 주자를 직접 태그(홈 포스아웃 아님)');lines.push('④ 3루 정지·귀루 시: 투수 → 1루수 송구로 타자주자 아웃 우선');lines.push('⑤ 홈 송구는 항상 오답이 아닙니다. 홈 태그가 늦으면 세이프, 1루를 선택하면 득점이 가능할 수 있습니다.');lines.push('⑥ 고급 모드에서는 주자 속도와 포구·송구·태그 시간을 비교합니다.');}if(sc.review){lines.push('【AI 재검증】 '+sc.review.judgment);if(sc.review.judgment==='조건부'){lines.push('판정 조건 · '+sc.review.timing);lines.push('검토 의견 · '+sc.review.reason)}lines.push('아웃 처리 참고 · '+sc.review.force)}return lines.join('\n')}
+function model(){if(sc.type==='fly'&&plays.length&&flyThrowChoices().includes(plays[0]))return '① '+names[sc.fielder]+' 플라이 포구 → 타자 아웃\n② '+label[plays[0]]+'\n'+flyThrowExplanation(plays[0])+'\n※ 송구 선택은 상황에 따라 적절할 수 있지만 주자 아웃은 태그·어필 및 실제 타이밍으로 결정됩니다.';if(sc.type==='hit'&&plays.length&&outfieldDirectChoices().includes(plays[0]))return '① '+names[sc.fielder]+' 외야 안타 타구 처리\n② '+label[plays[0]]+' (중계수 생략)\n'+outfieldDirectExplanation(plays[0])+'\n※ 중계 송구와 직접 송구는 모두 가능한 선택이며, 직접 송구가 자동 아웃을 의미하지는 않습니다.';if(sc.type==='hit'&&['LF','CF','RF'].includes(sc.fielder)&&plays.length&&['CUTSS','CUT2','2SS','2B'].includes(plays[0])){const a=plays[0];return '① '+names[sc.fielder]+' 안타 타구 처리\n② '+label[a]+'\n'+(a.startsWith('CUT')?'중계 야수에게 송구해 홈·다른 베이스로 연결하는 선택입니다.':'2루 커버 야수에게 송구해 추가 진루를 저지하는 선택입니다. 실제 아웃은 주자의 진루 및 태그 타이밍에 따라 달라집니다.')+'\n※ 중계 송구와 2루 커버 송구 모두 상황에 따라 정답으로 인정합니다.';}if(sc.homeAlternative && plays.includes('HOME'))return '① '+names[sc.fielder]+' 땅볼 포구\n② 3루 주자가 홈으로 뛰는 것을 확인\n③ 포수에게 홈 송구 후 주자 태그 시도(홈 포스아웃 아님)\n④ 1루 송구도 복수 정답으로 인정\n※ 태그 성공 여부는 공과 주자의 실제 도착시간에 따라 달라집니다.';if(sc.id===85)return '① 중견수 플라이 포구 → 타자 아웃(2아웃)\n② 3루 송구: 2루 주자의 태그업 진루 저지. 정상 태그업 주자는 3루에서 태그해야 아웃\n③ 2루 송구: 조기 출발 후 귀루하지 않은 주자에 대한 어필 플레이\n④ 내야 중계: 주자 움직임을 확인하고 3루 등으로 연결\n※ 3루 송구만으로 자동 아웃이 되지 않으며, 주자의 실제 움직임과 공 도착 시각에 따라 판정합니다.';let intro=names[sc.fielder]+' '+(sc.catchBranches?'포구 방향에 따른 송구 분기':sc.catchStyle==='auto'?(sc.type==='fly'?'플라이 포구':'안타성 타구 처리'):(sc.catchStyle==='fore'?'포핸드':'백핸드')+' 포구');let lines=['① '+intro];activeRoute.forEach((a,i)=>lines.push((i+2)+'단계 · '+label[a]));if(sc.type==='fly')lines.push('결과 · 포구 성공 시 타자 아웃 확정');else if(sc.type==='hit')lines.push('결과 · 안타, 추가 진루는 별도 판단');else lines.push('목표 · '+(sc.expected==='double'?'병살 시도':'타자주자 아웃 시도'));if(sc.id===25)lines.push('분기 · 포핸드 → 2루 포스아웃 → 1루 병살 시도 / 백핸드 → 3루 포스아웃 → 1루 병살 시도. 실제 가능 여부는 타구 위치와 주자 도착시간에 따라 달라집니다.');if(sc.id>=26&&sc.id<=30){lines.push('정면 땅볼은 안정적인 정면 포구가 기본입니다. 포핸드·백핸드는 타구가 좌우로 치우칠 때만 선택하는 포구 기술이며 병살의 필수 조건이 아닙니다.');lines.push('포구 후에는 주자 위치, 아웃카운트, 베이스 커버, 송구 타이밍을 보고 선행주자 포스아웃과 1루 송구를 판단합니다.');if(sc.id===27)lines.push('2루수 정면 땅볼 · 1루 주자 포스아웃을 위해 유격수에게 송구한 뒤 1루로 연결하면 4-6-3 병살을 시도할 수 있습니다.');}if(sc.id===10)lines.push('대안 · 3루수의 2루 송구 → 1루 송구도 가능(상황에 따라 판단)');if(sc.id===20)lines.push('대안 · 3루 직접 송구도 상황에 따라 가능');if(sc.id===21)lines.push('대안 · 2루 직접 송구도 가능');if(sc.id===24)lines.push('주의 · 홈 승부보다 추가 진루 억제가 일반적으로 유리');if(isLoadedInfield())lines.push('만루 추가 선택지 · 홈 송구(3루 주자 포스아웃), 3루 송구(2루 주자 포스아웃), 2루 송구(1루 주자 포스아웃), 1루 송구(타자주자 아웃). 첫 선택에 따라 후속 1루 송구 가능.');if((sc.id>=31&&sc.id<=33)||sc.homeDecision){lines.length=0;lines.push('① 투수가 땅볼 포구');lines.push('② 3루 주자 움직임 확인: '+((sc.id===31||sc.runnerBehavior==='charge')?'홈 쇄도':sc.id===32?'3루 정지':'3루 귀루'));lines.push('③ 홈 쇄도 시: 투수 → 포수 홈 송구 → 포수가 주자를 직접 태그(홈 포스아웃 아님)');lines.push('④ 3루 정지·귀루 시: 투수 → 1루수 송구로 타자주자 아웃 우선');lines.push('⑤ 홈 송구는 항상 오답이 아닙니다. 홈 태그가 늦으면 세이프, 1루를 선택하면 득점이 가능할 수 있습니다.');lines.push('⑥ 고급 모드에서는 주자 속도와 포구·송구·태그 시간을 비교합니다.');}if(sc.review){lines.push('【AI 재검증】 '+sc.review.judgment);if(sc.review.judgment==='조건부'){lines.push('판정 조건 · '+sc.review.timing);lines.push('검토 의견 · '+sc.review.reason)}lines.push('아웃 처리 참고 · '+sc.review.force)}return lines.join('\n')}
 
 // 득점 판정: 실제 선택한 송구 순서, 아웃카운트, 3루 주자의 포스 상태를 우선 반영.
 // 명시되지 않은 주루/송구 타이밍은 확정 득점으로 가정하지 않는다.
