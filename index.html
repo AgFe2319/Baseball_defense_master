@@ -93,10 +93,12 @@ body[data-team='lg'] .panel,body[data-team='lg'] #preview,body[data-team='lg'] #
 body[data-team='lg'] #teamThemePanel{background:#fff!important;border:2px solid #c8c8c8!important;border-top:4px solid #c8102e!important}
 /* Version marker to distinguish updated installed PWA from stale cache */
 #themeVersionTag{font-size:11px;color:var(--muted);text-align:right;margin:3px 0 0}
-.scenario-search-row{display:flex;gap:8px;margin-top:9px}.scenario-search-row input{min-width:0;flex:1;border:1px solid #71817a;border-radius:12px;padding:12px 11px;background:#fff;color:#18201d;font-size:15px}.scenario-search-row button{border:1px solid #71817a;border-radius:12px;background:#fff;color:#18201d;padding:0 12px;font-weight:700}#scenarioSearchCount{opacity:1!important}</style><link rel="manifest" href="./manifest.webmanifest"></head><body><main class="app"><div class="header"><div><h1>⚾ 야구 수비 마스터</h1><div class="muted">297개 수비 시나리오 · 팀별 테마 · 수비 판단</div></div><button class="btn" id="install">설치</button></div>
-<section class="panel" id="teamThemePanel"><div class="theme-row"><label for="teamTheme">⚾ 응원 팀 테마</label><select id="teamTheme" aria-label="팀별 화면 테마"><option value="default">기본 · 그린</option><option value="kt">KT · 검정</option><option value="samsung">삼성 · 파랑</option><option value="kia">KIA · 빨강</option><option value="lg">LG · 흰·검·빨강 (은은한 줄무늬)</option><option value="doosan">두산 · 네이비</option><option value="ssg">SSG · 빨강</option><option value="hanwha">한화 · 주황</option><option value="nc">NC · 네이비·골드</option><option value="lotte">롯데 · 네이비·레드</option><option value="kiwoom">키움 · 버건디</option></select></div><div class="theme-note">선택한 테마는 게임 화면과 결과 화면에 적용되며 이 기기에 저장됩니다.</div></section><section class="panel"><div class="label">난이도</div><div class="seg" style="margin-top:8px"><button class="btn selected" data-mode="normal">일반 모드</button><button class="btn" data-mode="advanced">고급 모드</button></div><div class="muted" id="modeDesc" style="margin-top:9px">주자 위치만 표시 · 포구와 송구 순서 중심</div><div class="label" style="margin-top:13px;font-weight:750">상황 선택 · 아웃 → 주자 → 타구 위치</div><div class="scenario-search-row"><input id="scenarioSearch" type="search" placeholder="🔎 상황 검색: #85, 1사 1·2루, 중견수 플라이" aria-label="수비 상황 검색" autocomplete="off"/><button type="button" id="scenarioSearchClear" aria-label="검색어 지우기">지우기</button></div><div id="scenarioSearchCount" class="muted" aria-live="polite" style="margin:5px 0 7px;font-size:12px">전체 297개 상황</div><select id="scenario" aria-label="아웃카운트, 주자 배치, 타구 위치 순서로 정렬된 수비 상황 선택"><option value="random">🎲 무작위 상황</option></select><div class="stats" style="margin-top:12px"><div class="stat"><span class="label">상황</span><span id="number">—</span></div><div class="stat"><span class="label">아웃</span><span id="outs">—</span></div><div class="stat"><span class="label">주자</span><span id="bases">—</span></div><div class="stat"><span class="label">점수</span><span id="score">0</span></div></div></section>
+.scenario-search-row{display:flex;gap:8px;margin-top:9px}.scenario-search-row input{min-width:0;flex:1;border:1px solid #71817a;border-radius:12px;padding:12px 11px;background:#fff;color:#18201d;font-size:15px}.scenario-search-row button{border:1px solid #71817a;border-radius:12px;background:#fff;color:#18201d;padding:0 12px;font-weight:700}#scenarioSearchCount{opacity:1!important}
+.throw-mode{margin:12px 0;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface)!important;color:var(--fg)!important}.throw-mode-buttons{display:flex;gap:8px;margin-top:8px}.throw-mode-buttons .btn{flex:1;min-width:0;font-size:13px;padding:10px 6px}.direct-active .player{cursor:pointer}.direct-active .player circle{stroke:#f59e0b;stroke-width:3}.direct-active .player:hover circle{stroke:#dc2626}.direct-active #actions .btn{font-size:13px}
+</style><link rel="manifest" href="./manifest.webmanifest"></head><body><main class="app"><div class="header"><div><h1>⚾ 야구 수비 마스터</h1><div class="muted">297개 수비 시나리오 · 팀별 테마 · 수비 판단</div></div><button class="btn" id="install">설치</button></div>
+<section class="panel" id="teamThemePanel"><div class="theme-row"><label for="teamTheme">⚾ 응원 팀 테마</label><select id="teamTheme" aria-label="팀별 화면 테마"><option value="default">기본 · 그린</option><option value="kt">KT · 검정</option><option value="samsung">삼성 · 파랑</option><option value="kia">KIA · 빨강</option><option value="lg">LG · 흰·검·빨강 (은은한 줄무늬)</option><option value="doosan">두산 · 네이비</option><option value="ssg">SSG · 빨강</option><option value="hanwha">한화 · 주황</option><option value="nc">NC · 네이비·골드</option><option value="lotte">롯데 · 네이비·레드</option><option value="kiwoom">키움 · 버건디</option></select></div><div class="theme-note">선택한 테마는 게임 화면과 결과 화면에 적용되며 이 기기에 저장됩니다.</div></section><section class="panel"><div class="label">난이도</div><div class="seg" style="margin-top:8px"><button class="btn selected" data-mode="normal">초급 모드 · 4지선다</button><button class="btn" data-mode="intermediate">중급 모드 · 야수 직접 선택</button><button class="btn" data-mode="upper">상급 모드 · 송구 목적 판단</button><button class="btn" data-mode="advanced">고급 모드 · 주력·시간 판단</button></div><div class="muted" id="modeDesc" style="margin-top:9px">주자 위치만 표시 · 포구와 송구 순서 중심</div><div class="label" style="margin-top:13px;font-weight:750">상황 선택 · 아웃 → 주자 → 타구 위치</div><div class="scenario-search-row"><input id="scenarioSearch" type="search" placeholder="🔎 상황 검색: #85, 1사 1·2루, 중견수 플라이" aria-label="수비 상황 검색" autocomplete="off"/><button type="button" id="scenarioSearchClear" aria-label="검색어 지우기">지우기</button></div><div id="scenarioSearchCount" class="muted" aria-live="polite" style="margin:5px 0 7px;font-size:12px">전체 297개 상황</div><select id="scenario" aria-label="아웃카운트, 주자 배치, 타구 위치 순서로 정렬된 수비 상황 선택"><option value="random">🎲 무작위 상황</option></select><div class="stats" style="margin-top:12px"><div class="stat"><span class="label">상황</span><span id="number">—</span></div><div class="stat"><span class="label">아웃</span><span id="outs">—</span></div><div class="stat"><span class="label">주자</span><span id="bases">—</span></div><div class="stat"><span class="label">점수</span><span id="score">0</span></div></div></section>
 <section class="panel"><div class="row"><strong id="headline">수비 준비</strong><strong id="clock">—</strong></div><div class="bar"><div id="meter"></div></div><div class="field"><svg viewBox="0 0 360 340" role="img" aria-label="야구장 수비 위치"><defs><radialGradient id="grass"><stop stop-color="#378e53"/><stop offset="1" stop-color="#125735"/></radialGradient></defs><path d="M180 325 L5 145 Q180 -107 355 145 Z" fill="url(#grass)"/><path d="M180 325 L15 158 M180 325 L345 158" stroke="white" stroke-width="2"/><path d="M180 279 L75 175 L180 70 L285 175 Z" fill="#ba8a5b"/><path d="M180 252 L101 175 L180 96 L259 175 Z" fill="#287d4a"/><g id="diamond"></g><g id="players"></g><g id="runnerDots"></g><g id="ball"></g></svg><div id="preview" class="overlay" hidden><div class="muted" style="letter-spacing:2px">NEXT DEFENSIVE PLAY</div><h2 id="previewType"></h2><div class="big" id="previewSpeed"></div><p id="previewInfo"></p><div id="previewRunners" style="width:100%;max-width:350px;text-align:left"></div><button class="btn primary" id="go">▶ 수비 시작</button></div><div id="result" class="overlay result-overlay" hidden><div style="font-size:30px">⚾</div><h2 id="resultTitle"></h2><p id="resultText" style="font-size:13px"></p><div class="steps" id="answer"></div><div id="choiceReason" class="steps" style="white-space:pre-wrap;text-align:left;line-height:1.7;border:2px solid var(--border);margin:10px 0"></div><div id="runsSummary" class="steps" style="background:#153c34;border:1px solid #6c9e85;line-height:1.7;white-space:pre-wrap"></div><p id="userMoves" class="tiny" style="text-align:left;width:100%;max-height:none;overflow:visible;white-space:normal;overflow-wrap:anywhere"></p><button class="btn primary" id="next">다음 상황 ▶</button></div></div><p class="muted" style="text-align:center;margin-bottom:0">🔵 수비수　🟡 주자(번호=출발 베이스)　🟠 타자주자　⚪ 타구</p></section>
-<section class="panel"><strong id="prompt">경기를 시작하세요.</strong><div id="actions" class="actions"></div><div id="feedback" class="feedback" aria-live="polite"></div><button class="btn primary" id="start" style="width:100%;margin-top:12px">⚾ 경기 시작</button></section><p class="tiny">훈련용 수비 판단 게임입니다. 다른 AI의 297개 검토 결과(적절 198·조건부 99)를 반영했습니다. 조건부 상황은 실제 타이밍에 따라 결과가 달라집니다. 확장 상황은 기본 포스 규칙에 따른 연습 문제이며 실제 최적 수비는 타구 위치와 주자 움직임에 따라 달라집니다. 고급 모드의 도착시간은 실측 데이터가 아닌 교육용 가정이며 실제 경기 결과를 보장하지 않습니다. 포구가 성공한 플라이는 항상 타자 아웃입니다. 무사 3루 홈 송구는 포수가 주자를 태그해야 아웃입니다.</p></main><script>/* Curated practice scenarios. Routes are coaching choices, not official scoring guarantees. */
+<section class="panel"><strong id="prompt">경기를 시작하세요.</strong><div class="throw-mode" id="throwModeBox" style="display:none"><strong>송구 조작 방식</strong><div class="throw-mode-buttons"><button type="button" id="choiceMode" class="btn selected">📋 4개 선택지</button><button type="button" id="directMode" class="btn">⚾ 야수 직접 터치</button></div><div class="tiny" id="directHelp">야수를 선택한 뒤 송구 선택지에서 판단합니다.</div></div><div id="actions" class="actions"></div><div id="feedback" class="feedback" aria-live="polite"></div><button class="btn primary" id="start" style="width:100%;margin-top:12px">⚾ 경기 시작</button></section><p class="tiny">훈련용 수비 판단 게임입니다. 다른 AI의 297개 검토 결과(적절 198·조건부 99)를 반영했습니다. 조건부 상황은 실제 타이밍에 따라 결과가 달라집니다. 확장 상황은 기본 포스 규칙에 따른 연습 문제이며 실제 최적 수비는 타구 위치와 주자 움직임에 따라 달라집니다. 고급 모드의 도착시간은 실측 데이터가 아닌 교육용 가정이며 실제 경기 결과를 보장하지 않습니다. 포구가 성공한 플라이는 항상 타자 아웃입니다. 무사 3루 홈 송구는 포수가 주자를 태그해야 아웃입니다.</p></main><script>/* Curated practice scenarios. Routes are coaching choices, not official scoring guarantees. */
 window.SCENARIOS = [
 [1,0,[],"P","ground","normal","fore","투수 정면 땅볼",["1B"],"out"],
 [2,1,[1],"P","ground","fast","back","투수 오른쪽 땅볼",["2SS","1B"],"double"],
@@ -157,6 +159,8 @@ for(const outs of [0,1,2]) for(const bases of allBaseStates){
   }else if(fielder==='1B')route=['1TOUCH'];
   const scenario={id:nextScenarioId++,outs,bases:[...bases],fielder,type:'ground',speed:'normal',catchStyle:'auto',title:'확장 · '+baseName(bases)+' · '+fielder+' 앞 땅볼',route,expected,generated:true};
   if(homeDecision){scenario.homeDecision=true;scenario.runnerBehavior='charge';}
+   // 3루 주자가 실제로 홈으로 뛰는 땅볼 상황: 홈 태그 승부도 복수 정답.
+   if(has3 && !forceHome && outs<2 && !homeDecision){scenario.runnerBehavior='charge';scenario.homeAlternative=true;}
   window.SCENARIOS.push(scenario);
  }
  for(const fielder of outfielders)for(const type of ['fly','hit']){
@@ -198,17 +202,64 @@ if(tagUp85){tagUp85.outs=1;tagUp85.bases=[1,2];tagUp85.fielder='CF';tagUp85.type
 const points={P:[180,214],C:[180,303],'1B':[266,194],'2B':[224,149],'3B':[95,194],SS:[137,149],LF:[66,87],CF:[180,34],RF:[293,87]};
 const bags={0:[180,279],1:[285,175],2:[180,70],3:[75,175]},speedText={fast:'빠름',normal:'보통',slow:'느림'},typeText={ground:'내야 땅볼',fly:'외야 플라이',hit:'외야 안타'};
 const label={"1B":"1루수에게 송구","2SS":"2루 커버 유격수에게 송구 (주자 태그아웃·포스아웃 시도)","2B":"2루 커버 2루수에게 송구 (주자 태그아웃·포스아웃 시도)",HOME:"포수에게 홈 송구","3B":"3루수에게 송구","3TOUCH":"3루 베이스 터치","1TOUCH":"1루 베이스 터치","1P":"1루 커버 투수 송구",CUTSS:"내야 중계 유격수에게 송구 (홈·다른 베이스 연결)",CUT2:"내야 중계 2루수에게 송구 (홈·다른 베이스 연결)",CUT1:"내야 중계 1루수에게 송구 (홈·다른 베이스 연결)","2BASE":"2루 베이스로 송구 (타자주자 태그아웃 시도·진루 저지)","3BASE":"3루 베이스로 송구 (주자 태그·포스 여부 확인)",TAG:"포수가 주자를 태그",HOLD3:"3루 주자 귀루 확인",HOLD:"내야로 송구해 추가 진루 억제"};
+// Dynamic defensive positioning shared by all four difficulty modes.
+// The SS ground ball is covered by the second baseman at the actual second-base bag.
+// On outfield catches the middle infielders reposition into cutoff lanes.
+let relayStart=0;
+function directDefensivePositions(){
+ if(!sc || !['action','catch','home-tag'].includes(phase))return {};
+ const result={};
+ if(sc.type==='ground' && sc.fielder==='SS'){
+   result['2B']=[...bags[2]];
+ }
+ if(['LF','CF','RF'].includes(sc.fielder) && ['hit','fly'].includes(sc.type)){
+   // Primary cutoff: LF/CF -> SS, RF -> 2B. Other middle infielder backs up near second.
+   const main=sc.fielder==='RF'?'2B':'SS';
+   const other=main==='SS'?'2B':'SS';
+   const from=points[sc.fielder];
+   // On deep outfield plays use a point on the line from the fielder toward home.
+   const to=bags[0];
+   result[main]=[Math.round(from[0]*.55+to[0]*.45),Math.round(from[1]*.55+to[1]*.45)];
+   result[other]=[bags[2][0]+(main==='SS'?-24:24),bags[2][1]+36];
+ }
+ return result;
+}
+function cutoffAssignment(){
+ if(!sc || !['hit','fly'].includes(sc.type) || !['LF','CF','RF'].includes(sc.fielder))return null;
+ const id=sc.fielder==='RF'?'2B':'SS';
+ const target=directDefensivePositions()[id];
+ return target?{id,target}:null;
+}
+function playerPosition(id){
+ const target=directDefensivePositions()[id];
+ if(target){
+   const t=Math.min(1,Math.max(0,(performance.now()-relayStart)/850));
+   const ease=t*t*(3-2*t);
+   return [lerp(points[id][0],target[0],ease),lerp(points[id][1],target[1],ease)];
+ }
+ return points[id];
+}
 const speedSec={fast:3.45,normal:4.2,slow:5.0};
 let motionRaf=0,motionStart=0,motionElapsed=0;
 let scoreAwards={};
 function award(points){score+=points;const idx=log.length-1;if(idx>=0)scoreAwards[idx]=(scoreAwards[idx]||0)+points;}
+let throwInputMode=localStorage.getItem('baseball-throw-mode')==='direct'?'direct':'choices';
 let catchChoice=null,activeRoute=[],mode='normal',sc=null,phase='idle',step=0,score=0,log=[],raf=0,started=0,elapsed=0,holder=null,ball=null,runnerSpeeds={},outsMade=0,plays=[],finishReason='',advancedResult=null;
 const random=a=>a[Math.floor(Math.random()*a.length)];
 function svg(tag,attrs,parent){const e=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));parent.append(e);return e}
 function actions(options){$('actions').replaceChildren();options.forEach(([txt,fn])=>{let b=document.createElement('button');b.className='btn';b.textContent=txt;b.onclick=fn;$('actions').append(b)})}
 function updateHeader(){ $('number').textContent=sc?'#'+sc.id:'—';$('outs').textContent=sc?sc.outs+outsMade:'—';$('bases').textContent=sc?(sc.bases.map(n=>n+'루').join('·')||'없음'):'—';$('score').textContent=score;}
-function draw(){['diamond','players','runnerDots','ball'].forEach(id=>$(id).replaceChildren());for(let i=0;i<4;i++){const p=bags[i];svg('rect',{x:p[0]-7,y:p[1]-7,width:14,height:14,transform:`rotate(45 ${p[0]} ${p[1]})`,fill:'white',stroke:'#ddd'},$('diamond'))}
-Object.entries(points).forEach(([id,p])=>{const g=svg('g',{role:'button',tabindex:0,'aria-label':names[id],class:'player'},$('players'));svg('circle',{cx:p[0],cy:p[1],r:holder===id?19:16,fill:holder===id?'#fde047':'#bfdbfe',stroke:'#1e40af','stroke-width':2},g);let t=svg('text',{x:p[0],y:p[1]+4,'text-anchor':'middle','font-size':11,'font-weight':800,fill:'#172554'},g);t.textContent=id;g.onclick=()=>chooseFielder(id);g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();chooseFielder(id)}}});
+function draw(){['diamond','players','runnerDots','ball'].forEach(id=>$(id).replaceChildren());for(let i=0;i<4;i++){
+ const p=bags[i],touchable=i===1&&phase==='action'&&throwInputMode==='direct'&&holder==='1B'&&activeRoute[step]==='1TOUCH';
+ const g=svg('g',touchable?{role:'button',tabindex:0,'aria-label':'1루 베이스 터치',class:'base-touch-target'}:{},$('diamond'));
+ if(touchable){svg('circle',{cx:p[0],cy:p[1],r:24,fill:'#facc15','fill-opacity':.22,stroke:'#f59e0b','stroke-width':2,'stroke-dasharray':'4 3'},g);
+   svg('circle',{cx:p[0],cy:p[1],r:23,fill:'transparent','pointer-events':'all'},g);
+   g.onclick=()=>touchFirstBase();g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();touchFirstBase()}};
+ }
+ svg('rect',{x:p[0]-7,y:p[1]-7,width:14,height:14,transform:`rotate(45 ${p[0]} ${p[1]})`,fill:'white',stroke:touchable?'#b45309':'#ddd','stroke-width':touchable?3:1,'pointer-events':touchable?'all':'none'},g);
+ if(touchable){const txt=svg('text',{x:p[0],y:p[1]-31,'text-anchor':'middle','font-size':12,'font-weight':800,fill:'#facc15','pointer-events':'none'},g);txt.textContent='1루 터치';}
+ }
+Object.entries(points).forEach(([id,original])=>{const p=playerPosition(id);const g=svg('g',{role:'button',tabindex:0,'aria-label':names[id],class:'player'},$('players'));svg('circle',{cx:p[0],cy:p[1],r:holder===id?19:16,fill:holder===id?'#fde047':'#bfdbfe',stroke:'#1e40af','stroke-width':2},g);let t=svg('text',{x:p[0],y:p[1]+4,'text-anchor':'middle','font-size':11,'font-weight':800,fill:'#172554'},g);t.textContent=id;g.onclick=()=>tapPlayer(id);g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tapPlayer(id)}}});
 if(sc)drawRunners();if(ball)svg('circle',{cx:ball[0],cy:ball[1],r:5,fill:'white',stroke:'#dc2626','stroke-width':2},$('ball'));
 }
 function lerp(a,b,t){return a+(b-a)*Math.max(0,Math.min(1,t))}
@@ -248,19 +299,74 @@ function motionLoop(now){
  if(phase!=='field')draw();
  motionRaf=requestAnimationFrame(motionLoop);
 }
-function setup(){cancelAnimationFrame(raf);cancelAnimationFrame(motionRaf);motionElapsed=0;started=0;const val=$('scenario').value;sc=val==='random'?random(S):S.find(x=>x.id===+val);phase='preview';scoreAwards={};step=0;catchChoice=null;activeRoute=[...sc.route];log=[];elapsed=0;holder=null;ball=bags[0];outsMade=0;plays=[];advancedResult=null;
+function setup(){cancelAnimationFrame(raf);cancelAnimationFrame(motionRaf);motionElapsed=0;started=0;relayStart=0;const val=$('scenario').value;sc=val==='random'?random(S):S.find(x=>x.id===+val);phase='preview';scoreAwards={};step=0;catchChoice=null;activeRoute=[...sc.route];log=[];elapsed=0;holder=null;ball=bags[0];outsMade=0;plays=[];advancedResult=null;
 runnerSpeeds={batter:random(['fast','normal','slow'])};sc.bases.forEach(n=>runnerSpeeds[n]=random(['fast','normal','slow']));
 $('start').classList.add('hidden');$('result').hidden=true;$('preview').hidden=false;$('previewType').textContent=typeText[sc.type];$('previewSpeed').textContent='타구 속도 · '+speedText[sc.speed];$('previewInfo').textContent=sc.outs+'아웃 · '+(sc.bases.length?sc.bases.map(n=>n+'루').join('·')+' 주자':'주자 없음')+' · 제한 '+10+'초';
 $('previewRunners').replaceChildren();if(mode==='advanced'){[...sc.bases.map(n=>[n+'루 주자',runnerSpeeds[n]]),['타자주자',runnerSpeeds.batter]].forEach(([n,v])=>{const e=document.createElement('div');e.className='runnerline row';e.innerHTML='<span></span><strong></strong>';e.children[0].textContent='🟡 '+n;e.children[1].textContent=speedText[v];$('previewRunners').append(e)})}else{const e=document.createElement('div');e.className='runnerline';e.textContent='주자 위치: '+(sc.bases.length?sc.bases.map(n=>n+'루').join(' · '):'없음');$('previewRunners').append(e)}
 $('headline').textContent='상황 #'+sc.id;$('clock').textContent='준비';$('meter').style.width='100%';$('prompt').textContent='타구 정보를 확인하고 수비를 시작하세요.';$('feedback').textContent='시작 전에는 시간이 흐르지 않습니다. 시작 후에는 송구를 고민하는 동안에도 주자가 움직입니다.';actions([]);updateHeader();draw();}
 function begin(){if(phase!=='preview')return;phase='field';$('preview').hidden=true;started=performance.now();motionStart=started;motionElapsed=0;motionRaf=requestAnimationFrame(motionLoop);$('prompt').textContent='타구를 처리할 수비수를 터치하세요.';$('feedback').textContent=sc.title;tick(started)}
 function tick(now){if(!['field','catch','action','home-tag'].includes(phase))return;elapsed=(now-started)/1000;const total=10;const dur=sc.type==='fly'?3.5:sc.type==='hit'?2.8:2.2;if(phase==='field'){let t=Math.min(1,elapsed/dur),p=points[sc.fielder];ball=[180+(p[0]-180)*t,279+(p[1]-279)*t-(sc.type==='fly'?60*Math.sin(Math.PI*t):0)];draw();}const remain=Math.max(0,total-elapsed);$('clock').textContent='⏱ '+remain.toFixed(1)+'초';$('meter').style.width=(100*remain/total)+'%';if(elapsed>=total){end(false,'10초 제한시간 초과: 수비 판단을 완료하지 못했습니다.');return}raf=requestAnimationFrame(tick)}
-function chooseFielder(id){if(phase!=='field')return;elapsed=(performance.now()-started)/1000;if(id!==sc.fielder){log.push(names[id]+' 선택');end(false,'타구 처리 수비수를 잘못 선택했습니다.');return}holder=id;ball=null;log.push(names[id]+' 포구');if(sc.catchBranches){phase='catch';$('prompt').textContent='포구 방향에 따라 송구 경로가 달라집니다.';actions([['🧤 포핸드 포구',()=>chooseCatch('fore')],['🧤 백핸드 포구',()=>chooseCatch('back')]]);}else if(['P','1B','2B','3B','SS'].includes(id)){catchChoice='auto';log.push('자동 포구');award(5);phase='action';if((sc.id>=31&&sc.id<=33)||sc.homeDecision)homePlayActions();else showActions();}else{award(10);if(sc.type==='fly'){outsMade=1;log.push('타자 플라이 아웃')}phase='action';if(!sc.route.length){end(true,'플라이 포구로 타자 아웃. 송구 불필요.');return}showActions()}updateHeader();draw()}
+// v20: field-based throw control. Same game actions and scoring as the button mode.
+const receiverChoices={P:['1P'],C:['HOME','TAG'], '1B':['1B','CUT1','1TOUCH'], '2B':['2B','2BASE','CUT2'],SS:['2SS','CUTSS'], '3B':['3B','3BASE','3TOUCH']};
+function touchFirstBase(){if(phase==='action'&&throwInputMode==='direct'&&holder==='1B'&&activeRoute[step]==='1TOUCH')chooseAction('1TOUCH');}
+function tapPlayer(id){
+ if(phase==='field'){chooseFielder(id);return;}
+ if(phase!=='action'||throwInputMode!=='direct')return;
+ if(holder==='1B'&&activeRoute[step]==='1TOUCH'){$('feedback').textContent='야수가 아닌 1루 베이스(노란색 강조)를 직접 눌러 주세요.';return;}
+ const candidates=(receiverChoices[id]||[]).filter(a=>a!==undefined&&a!=='1TOUCH');
+ if(!candidates.length){$('feedback').textContent=names[id]+'에게 송구하는 동작은 이 상황에 구현되어 있지 않습니다.';return;}
+ // Do not conflate a cutoff relay with a throw to a base cover player.
+ const available=alternativesForDirect().filter(a=>candidates.includes(a));
+ if(available.length===1){chooseAction(available[0]);return;}
+ if(available.length>1 && mode==='intermediate'){
+   const preferred=activeRoute[step];
+   chooseAction(available.includes(preferred)?preferred:available[0]);
+   return;
+ }
+ if(available.length>1){
+   $('prompt').textContent=names[id]+'에게 어떤 플레이를 할까요?';
+   actions(available.map(a=>[label[a],()=>chooseAction(a)]).concat([['↩ 야수 다시 선택',()=>showActions()]]));
+   return;
+ }
+ $('feedback').textContent=names[id]+'에게 송구할 수는 있지만 현재 게임에 정의된 수비 경로에는 없습니다. 다른 야수를 선택해 보세요.';
+}
+function alternativesForDirect(){
+ if(sc.id===85&&step===0)return ['3B','2SS','CUTSS','HOLD'];
+ if(step===0&&isLoadedInfield())return loadedFirstChoices();
+ return [...new Set([activeRoute[step],...(step===0&&sc.acceptableFirst?sc.acceptableFirst:[]),'HOME','3B','3BASE','2SS','2B','1B','1P','CUTSS','CUT2','CUT1','2BASE','1TOUCH','3TOUCH','HOLD'])].filter(Boolean);
+}
+function updateThrowMode(){
+ $('choiceMode').classList.toggle('selected',throwInputMode==='choices');
+ $('directMode').classList.toggle('selected',throwInputMode==='direct');
+ $('directHelp').textContent=throwInputMode==='direct'?(mode==='intermediate'?'야수만 터치하세요. 중계·태그 등 송구 목적은 자동 적용합니다.':'움직인 중계 야수 또는 베이스 커버 야수를 터치하고 송구 목적을 선택하세요.'):'아래 4개 송구 선택지에서 판단합니다.';
+ document.body.classList.toggle('direct-active',throwInputMode==='direct'&&phase==='action');
+ if(phase==='action')showActions();
+}
+function setThrowMode(v){throwInputMode=v;localStorage.setItem('baseball-throw-mode',v);updateThrowMode();}
+$('choiceMode').onclick=()=>selectDifficulty('normal');
+$('directMode').onclick=()=>selectDifficulty(mode==='normal'?'intermediate':mode);
+updateThrowMode();
+function chooseFielder(id){if(phase!=='field')return;elapsed=(performance.now()-started)/1000;if(id!==sc.fielder){log.push(names[id]+' 선택');end(false,'타구 처리 수비수를 잘못 선택했습니다.');return}holder=id;ball=null;relayStart=performance.now();log.push(names[id]+' 포구');if(sc.catchBranches){phase='catch';$('prompt').textContent='포구 방향에 따라 송구 경로가 달라집니다.';actions([['🧤 포핸드 포구',()=>chooseCatch('fore')],['🧤 백핸드 포구',()=>chooseCatch('back')]]);}else if(['P','1B','2B','3B','SS'].includes(id)){catchChoice='auto';log.push('자동 포구');award(5);phase='action';if((sc.id>=31&&sc.id<=33)||sc.homeDecision)homePlayActions();else showActions();}else{award(10);if(sc.type==='fly'){outsMade=1;log.push('타자 플라이 아웃')}phase='action';if(!sc.route.length){end(true,'플라이 포구로 타자 아웃. 송구 불필요.');return}showActions()}updateHeader();draw()}
 function chooseCatch(c){if(phase!=='catch')return;catchChoice=c;log.push(c==='fore'?'포핸드':'백핸드');activeRoute=[...sc.catchBranches[c]];award(5);phase='action';$('feedback').textContent=(c==='fore'?'포핸드':'백핸드')+' 선택 · 권장 첫 동작: '+label[activeRoute[0]]+' · 이제 송구를 판단하세요.';showActions()}
 function isLoadedInfield(){return sc && sc.type==='ground' && sc.outs<2 && [1,2,3].every(b=>sc.bases.includes(b)) && ['P','1B','2B','3B','SS'].includes(sc.fielder)}
 function loadedFirstChoices(){return ['HOME','3BASE','2B','2SS','1B'].filter(a=>a!=='2B'||sc.fielder!=='2B').filter(a=>a!=='2SS'||sc.fielder==='2B');}
-function alternatives(){if(sc.id===85&&step===0)return ['3B','2SS','CUTSS','HOLD'];if(step===0&&isLoadedInfield())return loadedFirstChoices();const expected=activeRoute[step];const pool=Object.keys(label).filter(k=>k!==expected && !(step===0&&sc.acceptableFirst&&sc.acceptableFirst.includes(k)));const choices=step===0&&sc.acceptableFirst?[...sc.acceptableFirst]:[expected];while(choices.length<4&&pool.length){const i=Math.floor(Math.random()*pool.length);choices.push(pool.splice(i,1)[0])}for(let i=choices.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[choices[i],choices[j]]=[choices[j],choices[i]]}return choices}
-function showActions(){if(step>=activeRoute.length){end(true,'지정된 수비 동작을 모두 수행했습니다.');return}/* 제한시간은 계속 표시 */$('prompt').textContent=(step+1)+'번째 수비 동작을 선택하세요.';$('feedback').textContent='현재 수비: '+names[holder]+' · 알맞은 송구/베이스 처리를 선택하세요.';actions(alternatives().map(a=>[label[a],()=>chooseAction(a)]));draw()}
+function alternatives(){if(sc.id===85&&step===0)return ['3B','2SS','CUTSS','HOLD'];if(step===0&&isLoadedInfield())return loadedFirstChoices();if(step===0&&sc.homeAlternative){const pool=['HOME',activeRoute[0],'1B','2B','3B','2SS','CUTSS'];return [...new Set(pool)].slice(0,4).sort(()=>Math.random()-.5)}const expected=activeRoute[step];const pool=Object.keys(label).filter(k=>k!==expected && !(step===0&&sc.acceptableFirst&&sc.acceptableFirst.includes(k)));const choices=step===0&&sc.acceptableFirst?[...sc.acceptableFirst]:[expected];while(choices.length<4&&pool.length){const i=Math.floor(Math.random()*pool.length);choices.push(pool.splice(i,1)[0])}for(let i=choices.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[choices[i],choices[j]]=[choices[j],choices[i]]}return choices}
+function showActions(){if(step>=activeRoute.length){end(true,'지정된 수비 동작을 모두 수행했습니다.');return}/* 제한시간은 계속 표시 */
+ document.body.classList.toggle('direct-active',throwInputMode==='direct');
+ if(throwInputMode==='direct'){
+  $('prompt').textContent=(step+1)+'번째 수비 · 공을 받을 야수를 경기장에서 누르세요.';
+  $('feedback').textContent='현재 공을 가진 야수: '+names[holder]+(mode==='intermediate'?' · 받을 야수만 터치하면 송구 목적은 자동 처리됩니다.':' · 야수 터치 후 중계/베이스 커버 목적을 선택하세요.')+(cutoffAssignment()?' · 유격수/2루수가 중계 및 백업 위치로 이동합니다.':sc.fielder==='SS'?' · 2루수가 2루 베이스를 커버합니다.':'');
+  const extras=[];
+  const next=activeRoute[step];
+  if(next==='1TOUCH'&&holder==='1B'){$('prompt').textContent='1루수가 공을 잡았습니다. 경기장에 있는 1루 베이스를 직접 터치하세요.';$('feedback').textContent='노란색으로 강조된 1루 베이스를 누르면 베이스 터치 플레이로 판정합니다.';}else if(['1TOUCH','3TOUCH','TAG','HOLD','HOLD3'].includes(next))extras.push([label[next],()=>chooseAction(next)]);
+  extras.push(['↩ 초급(4지선다)으로 전환',()=>selectDifficulty('normal')]);
+  actions(extras);
+ }else{
+  $('prompt').textContent=(step+1)+'번째 수비 동작을 선택하세요.';
+  $('feedback').textContent='현재 수비: '+names[holder]+' · 알맞은 송구/베이스 처리를 선택하세요.';
+  actions(alternatives().map(a=>[label[a],()=>chooseAction(a)]));
+ }
+ draw();}
 function chooseAction(a){if(phase!=='action')return;
  if(sc.id===85&&step===0){
    const accepted=['3B','2SS','CUTSS','HOLD'];
@@ -334,9 +440,9 @@ function selectHomePlay(target){
 function finishHomeTag(tag){
  if(phase!=='home-tag')return;
  if(tag){log.push('포수 주자 태그');plays.push('TAG');award(10);end(true,(sc.id===31||sc.runnerBehavior==='charge')?'홈 태그 승부를 선택했습니다. 주자 도착시간에 따라 아웃·세이프가 달라집니다.':'주자가 홈에 오지 않았습니다. 홈에서 태그아웃할 수 없습니다.');}
- else{log.push('홈 베이스만 밟기');end(false,'무사 3루는 홈 포스 상황이 아닙니다. 포수가 홈을 밟기만 해서는 주자가 아웃되지 않습니다.');}
+ else{log.push('홈 베이스만 밟기');end(false,'만루가 아닌 홈 승부에서는 포수가 홈 베이스만 밟아서는 아웃되지 않습니다. 주자를 직접 태그해야 합니다.');}
 }
-function model(){if(sc.id===85)return '① 중견수 플라이 포구 → 타자 아웃(2아웃)\n② 3루 송구: 2루 주자의 태그업 진루 저지. 정상 태그업 주자는 3루에서 태그해야 아웃\n③ 2루 송구: 조기 출발 후 귀루하지 않은 주자에 대한 어필 플레이\n④ 내야 중계: 주자 움직임을 확인하고 3루 등으로 연결\n※ 3루 송구만으로 자동 아웃이 되지 않으며, 주자의 실제 움직임과 공 도착 시각에 따라 판정합니다.';let intro=names[sc.fielder]+' '+(sc.catchBranches?'포구 방향에 따른 송구 분기':sc.catchStyle==='auto'?(sc.type==='fly'?'플라이 포구':'안타성 타구 처리'):(sc.catchStyle==='fore'?'포핸드':'백핸드')+' 포구');let lines=['① '+intro];activeRoute.forEach((a,i)=>lines.push((i+2)+'단계 · '+label[a]));if(sc.type==='fly')lines.push('결과 · 포구 성공 시 타자 아웃 확정');else if(sc.type==='hit')lines.push('결과 · 안타, 추가 진루는 별도 판단');else lines.push('목표 · '+(sc.expected==='double'?'병살 시도':'타자주자 아웃 시도'));if(sc.id===25)lines.push('분기 · 포핸드 → 2루 포스아웃 → 1루 병살 시도 / 백핸드 → 3루 포스아웃 → 1루 병살 시도. 실제 가능 여부는 타구 위치와 주자 도착시간에 따라 달라집니다.');if(sc.id>=26&&sc.id<=30){lines.push('정면 땅볼은 안정적인 정면 포구가 기본입니다. 포핸드·백핸드는 타구가 좌우로 치우칠 때만 선택하는 포구 기술이며 병살의 필수 조건이 아닙니다.');lines.push('포구 후에는 주자 위치, 아웃카운트, 베이스 커버, 송구 타이밍을 보고 선행주자 포스아웃과 1루 송구를 판단합니다.');if(sc.id===27)lines.push('2루수 정면 땅볼 · 1루 주자 포스아웃을 위해 유격수에게 송구한 뒤 1루로 연결하면 4-6-3 병살을 시도할 수 있습니다.');}if(sc.id===10)lines.push('대안 · 3루수의 2루 송구 → 1루 송구도 가능(상황에 따라 판단)');if(sc.id===20)lines.push('대안 · 3루 직접 송구도 상황에 따라 가능');if(sc.id===21)lines.push('대안 · 2루 직접 송구도 가능');if(sc.id===24)lines.push('주의 · 홈 승부보다 추가 진루 억제가 일반적으로 유리');if(isLoadedInfield())lines.push('만루 추가 선택지 · 홈 송구(3루 주자 포스아웃), 3루 송구(2루 주자 포스아웃), 2루 송구(1루 주자 포스아웃), 1루 송구(타자주자 아웃). 첫 선택에 따라 후속 1루 송구 가능.');if((sc.id>=31&&sc.id<=33)||sc.homeDecision){lines.length=0;lines.push('① 투수가 땅볼 포구');lines.push('② 3루 주자 움직임 확인: '+((sc.id===31||sc.runnerBehavior==='charge')?'홈 쇄도':sc.id===32?'3루 정지':'3루 귀루'));lines.push('③ 홈 쇄도 시: 투수 → 포수 홈 송구 → 포수가 주자를 직접 태그(홈 포스아웃 아님)');lines.push('④ 3루 정지·귀루 시: 투수 → 1루수 송구로 타자주자 아웃 우선');lines.push('⑤ 홈 송구는 항상 오답이 아닙니다. 홈 태그가 늦으면 세이프, 1루를 선택하면 득점이 가능할 수 있습니다.');lines.push('⑥ 고급 모드에서는 주자 속도와 포구·송구·태그 시간을 비교합니다.');}if(sc.review){lines.push('【AI 재검증】 '+sc.review.judgment);if(sc.review.judgment==='조건부'){lines.push('판정 조건 · '+sc.review.timing);lines.push('검토 의견 · '+sc.review.reason)}lines.push('아웃 처리 참고 · '+sc.review.force)}return lines.join('\n')}
+function model(){if(sc.homeAlternative && plays.includes('HOME'))return '① '+names[sc.fielder]+' 땅볼 포구\n② 3루 주자가 홈으로 뛰는 것을 확인\n③ 포수에게 홈 송구 후 주자 태그 시도(홈 포스아웃 아님)\n④ 1루 송구도 복수 정답으로 인정\n※ 태그 성공 여부는 공과 주자의 실제 도착시간에 따라 달라집니다.';if(sc.id===85)return '① 중견수 플라이 포구 → 타자 아웃(2아웃)\n② 3루 송구: 2루 주자의 태그업 진루 저지. 정상 태그업 주자는 3루에서 태그해야 아웃\n③ 2루 송구: 조기 출발 후 귀루하지 않은 주자에 대한 어필 플레이\n④ 내야 중계: 주자 움직임을 확인하고 3루 등으로 연결\n※ 3루 송구만으로 자동 아웃이 되지 않으며, 주자의 실제 움직임과 공 도착 시각에 따라 판정합니다.';let intro=names[sc.fielder]+' '+(sc.catchBranches?'포구 방향에 따른 송구 분기':sc.catchStyle==='auto'?(sc.type==='fly'?'플라이 포구':'안타성 타구 처리'):(sc.catchStyle==='fore'?'포핸드':'백핸드')+' 포구');let lines=['① '+intro];activeRoute.forEach((a,i)=>lines.push((i+2)+'단계 · '+label[a]));if(sc.type==='fly')lines.push('결과 · 포구 성공 시 타자 아웃 확정');else if(sc.type==='hit')lines.push('결과 · 안타, 추가 진루는 별도 판단');else lines.push('목표 · '+(sc.expected==='double'?'병살 시도':'타자주자 아웃 시도'));if(sc.id===25)lines.push('분기 · 포핸드 → 2루 포스아웃 → 1루 병살 시도 / 백핸드 → 3루 포스아웃 → 1루 병살 시도. 실제 가능 여부는 타구 위치와 주자 도착시간에 따라 달라집니다.');if(sc.id>=26&&sc.id<=30){lines.push('정면 땅볼은 안정적인 정면 포구가 기본입니다. 포핸드·백핸드는 타구가 좌우로 치우칠 때만 선택하는 포구 기술이며 병살의 필수 조건이 아닙니다.');lines.push('포구 후에는 주자 위치, 아웃카운트, 베이스 커버, 송구 타이밍을 보고 선행주자 포스아웃과 1루 송구를 판단합니다.');if(sc.id===27)lines.push('2루수 정면 땅볼 · 1루 주자 포스아웃을 위해 유격수에게 송구한 뒤 1루로 연결하면 4-6-3 병살을 시도할 수 있습니다.');}if(sc.id===10)lines.push('대안 · 3루수의 2루 송구 → 1루 송구도 가능(상황에 따라 판단)');if(sc.id===20)lines.push('대안 · 3루 직접 송구도 상황에 따라 가능');if(sc.id===21)lines.push('대안 · 2루 직접 송구도 가능');if(sc.id===24)lines.push('주의 · 홈 승부보다 추가 진루 억제가 일반적으로 유리');if(isLoadedInfield())lines.push('만루 추가 선택지 · 홈 송구(3루 주자 포스아웃), 3루 송구(2루 주자 포스아웃), 2루 송구(1루 주자 포스아웃), 1루 송구(타자주자 아웃). 첫 선택에 따라 후속 1루 송구 가능.');if((sc.id>=31&&sc.id<=33)||sc.homeDecision){lines.length=0;lines.push('① 투수가 땅볼 포구');lines.push('② 3루 주자 움직임 확인: '+((sc.id===31||sc.runnerBehavior==='charge')?'홈 쇄도':sc.id===32?'3루 정지':'3루 귀루'));lines.push('③ 홈 쇄도 시: 투수 → 포수 홈 송구 → 포수가 주자를 직접 태그(홈 포스아웃 아님)');lines.push('④ 3루 정지·귀루 시: 투수 → 1루수 송구로 타자주자 아웃 우선');lines.push('⑤ 홈 송구는 항상 오답이 아닙니다. 홈 태그가 늦으면 세이프, 1루를 선택하면 득점이 가능할 수 있습니다.');lines.push('⑥ 고급 모드에서는 주자 속도와 포구·송구·태그 시간을 비교합니다.');}if(sc.review){lines.push('【AI 재검증】 '+sc.review.judgment);if(sc.review.judgment==='조건부'){lines.push('판정 조건 · '+sc.review.timing);lines.push('검토 의견 · '+sc.review.reason)}lines.push('아웃 처리 참고 · '+sc.review.force)}return lines.join('\n')}
 
 // 득점 판정: 실제 선택한 송구 순서, 아웃카운트, 3루 주자의 포스 상태를 우선 반영.
 // 명시되지 않은 주루/송구 타이밍은 확정 득점으로 가정하지 않는다.
@@ -353,7 +459,7 @@ function runSummary(ok){
  const doubleAttempt=sc.type==='ground'&&forceAtSecond&&firstOut&&plays.length>=2;
  const note=(value,why)=>'실점: '+value+' · '+why;
  if(!ok)return note('판정 보류','수비가 완료되지 않았으므로 주자 진루 및 득점을 확정할 수 없음');
- if(sc.type==='ground' && ((sc.id>=31&&sc.id<=33)||sc.homeDecision)){
+ if(sc.type==='ground' && ((sc.id>=31&&sc.id<=33)||sc.homeDecision||sc.homeAlternative)){
   const charges=sc.id===31||sc.runnerBehavior==='charge';
   if(!charges)return note('0점','3루 주자가 홈으로 진루하지 않음');
   if(hasHomePlay&&plays.includes('TAG')){
@@ -462,10 +568,11 @@ function explainMyChoice(ok){if(sc.id===85){const a=plays[0];const msg={ '3B':'3
   reason.push('선택한 수비 순서가 현재 게임의 권장 경로와 일치했습니다.');
   if(sc.type==='ground')reason.push('실제 아웃 여부는 포구·송구 시간과 주자 도착 시점에 따라 달라질 수 있습니다.');
  }
- if(sc.id===148){reason.push('상황 #148 핵심: 1사 2루에서는 2루 주자가 3루로 갈 의무가 없습니다. 유격수의 1루 송구가 기본이며, 3루 승부는 주자가 실제로 뛰고 있고 태그아웃이 가능한 경우에만 조건부로 타당합니다.');}
+ if(sc.homeAlternative){reason.push('3루 주자가 실제로 홈으로 쇄도하는 상황입니다. 1루 송구와 홈 송구(포수 태그)를 모두 수비 선택으로 인정합니다. 홈 송구의 아웃·세이프는 타이밍에 따라 달라집니다.');}
+  if(sc.id===148){reason.push('상황 #148 핵심: 1사 2루에서는 2루 주자가 3루로 갈 의무가 없습니다. 유격수의 1루 송구가 기본이며, 3루 승부는 주자가 실제로 뛰고 있고 태그아웃이 가능한 경우에만 조건부로 타당합니다.');}
  return '【내 선택 판단 이유】\n'+reason.join('\n');
 }
-function end(ok,msg){cancelAnimationFrame(raf);cancelAnimationFrame(motionRaf);phase='done';if(started){const remain=Math.max(0,10-(performance.now()-started)/1000);$('clock').textContent='⏱ '+remain.toFixed(1)+'초';$('meter').style.width=(remain*10)+'%';}actions([]);$('result').hidden=false;let result=ok?((sc.id>=31&&sc.id<=33||sc.homeDecision)?(mode==='advanced'?homeDecisionResult():(plays.includes('HOME')?((sc.id===31||sc.runnerBehavior==='charge')?'홈 태그아웃 시도 (성공 여부는 주자 도착에 따름)':'주자 미진루 · 홈 송구 불필요'):'1루 아웃 시도')):mode==='advanced'?timing():sc.type==='fly'?'플라이 아웃':sc.type==='hit'?'안타 수비 완료':sc.expected==='double'?(activeRoute.length===1?'1루 아웃 수비 완료':activeRoute[0]==='1TOUCH'?'1루 아웃 후 추가 송구':'병살 수비 시도 완료'):'아웃 수비 성공'):'수비 실패';$('resultTitle').textContent=result;$('resultTitle').style.color=ok?'#d8f268':'#ffb4aa';$('resultText').textContent=msg+(ok&&mode==='advanced'?' · 주루 속도와 송구 시간을 적용한 교육용 판정입니다.':'')+(sc.review&&sc.review.judgment==='조건부'?' · AI 검증: 조건부 상황입니다. 주자 속도·송구 타이밍에 따라 아웃 수가 달라질 수 있습니다.':'');$('choiceReason').textContent=explainMyChoice(ok);$('runsSummary').textContent='【이번 플레이 실점 여부】\n'+runSummary(ok);$('answer').textContent='【정답 및 해설】\n'+model()+'\n\n'+detailedBaseballExplanation(sc);$('userMoves').textContent='【내 선택】\n'+(log.map((entry,i)=>entry+(scoreAwards[i]?' (+'+scoreAwards[i]+'점)':' (0점)')).join(' → ')||'없음');$('result').scrollTop=0;$('headline').textContent='상황 #'+sc.id+' 종료';$('prompt').textContent='모범 답안을 확인하세요.';updateHeader();draw()}
+function end(ok,msg){cancelAnimationFrame(raf);cancelAnimationFrame(motionRaf);phase='done';if(started){const remain=Math.max(0,10-(performance.now()-started)/1000);$('clock').textContent='⏱ '+remain.toFixed(1)+'초';$('meter').style.width=(remain*10)+'%';}actions([]);$('result').hidden=false;let result=ok?(sc.homeAlternative&&plays.includes('HOME')?'홈 태그아웃 시도 (타이밍에 따라 판정)':((sc.id>=31&&sc.id<=33||sc.homeDecision)?(mode==='advanced'?homeDecisionResult():(plays.includes('HOME')?((sc.id===31||sc.runnerBehavior==='charge')?'홈 태그아웃 시도 (성공 여부는 주자 도착에 따름)':'주자 미진루 · 홈 송구 불필요'):'1루 아웃 시도')):mode==='advanced'?timing():sc.type==='fly'?'플라이 아웃':sc.type==='hit'?'안타 수비 완료':sc.expected==='double'?(activeRoute.length===1?'1루 아웃 수비 완료':activeRoute[0]==='1TOUCH'?'1루 아웃 후 추가 송구':'병살 수비 시도 완료'):'아웃 수비 성공')):'수비 실패';$('resultTitle').textContent=result;$('resultTitle').style.color=ok?'#d8f268':'#ffb4aa';$('resultText').textContent=msg+(ok&&mode==='advanced'?' · 주루 속도와 송구 시간을 적용한 교육용 판정입니다.':'')+(sc.review&&sc.review.judgment==='조건부'?' · AI 검증: 조건부 상황입니다. 주자 속도·송구 타이밍에 따라 아웃 수가 달라질 수 있습니다.':'');$('choiceReason').textContent=explainMyChoice(ok);$('runsSummary').textContent='【이번 플레이 실점 여부】\n'+runSummary(ok);$('answer').textContent='【정답 및 해설】\n'+model()+'\n\n'+detailedBaseballExplanation(sc);$('userMoves').textContent='【내 선택】\n'+(log.map((entry,i)=>entry+(scoreAwards[i]?' (+'+scoreAwards[i]+'점)':' (0점)')).join(' → ')||'없음');$('result').scrollTop=0;$('headline').textContent='상황 #'+sc.id+' 종료';$('prompt').textContent='모범 답안을 확인하세요.';updateHeader();draw()}
 const baseOrders=[[],[1],[2],[3],[1,2],[1,3],[2,3],[1,2,3]];
 const baseIndex=b=>baseOrders.findIndex(a=>a.length===b.length&&a.every(v=>b.includes(v)));
 const positionOrder={P:0,'1B':1,'2B':2,'3B':3,SS:4,LF:5,CF:6,RF:7};
@@ -499,9 +606,9 @@ function renderScenarioOptions(query=''){
 renderScenarioOptions();
 $('scenarioSearch').addEventListener('input',e=>renderScenarioOptions(e.target.value));
 $('scenarioSearchClear').addEventListener('click',()=>{$('scenarioSearch').value='';renderScenarioOptions();$('scenarioSearch').focus()});
-document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('selected',x===b));$('modeDesc').textContent=mode==='normal'?'주자 위치만 표시 · 수비 경로가 바뀔 때만 포구 방식 선택':'주자별 주력 표시 · 도착시간에 따른 아웃/세이프 계산';if(phase==='preview')setup()}));
+function selectDifficulty(next){mode=next;setThrowMode(next==='normal'?'choices':'direct');document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('selected',x.dataset.mode===next));$('modeDesc').textContent=next==='normal'?'초급: 기존 일반 모드 · 4개 송구 선택지에서 판단합니다.':next==='intermediate'?'중급: 받을 야수만 선택합니다. 송구 목적은 자동 판단합니다.':next==='upper'?'상급: 야수 선택 후 중계·태그 등 목적까지 판단합니다.':'고급: 기존 고급 모드 · 야수 선택과 목적 판단에 주력·도착시간을 적용합니다.';if(phase==='preview')setup()}document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>selectDifficulty(b.dataset.mode)));selectDifficulty('normal');
 $('start').onclick=setup;$('go').onclick=begin;$('next').onclick=setup;
 let deferred=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('install').style.display='block'});$('install').onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;$('install').style.display='none'};
 
 draw();})();
-</script><script>if(location.protocol==='https:'&&'serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script><script>(function(){const el=document.getElementById('teamTheme');const themes=['default','kt','samsung','kia','lg','doosan','ssg','hanwha','nc','lotte','kiwoom'];let saved='default';try{saved=localStorage.getItem('baseball-team-theme')||'default'}catch(e){}function apply(v){if(!themes.includes(v))v='default';el.value=v;document.body.dataset.team=v;const colors={default:'#091b1b',kt:'#08090b',samsung:'#061a40',kia:'#26090c',lg:'#f6f6f6',doosan:'#071327',ssg:'#29090d',hanwha:'#291509',nc:'#071626',lotte:'#071529',kiwoom:'#250915'};document.querySelector('meta[name="theme-color"]').setAttribute('content',colors[v]);try{localStorage.setItem('baseball-team-theme',v)}catch(e){}}el.addEventListener('change',()=>apply(el.value));apply(saved)})();</script><div id="themeVersionTag" style="text-align:center;padding:6px 0 14px;font-size:11px;color:#999">상황 검색 기능 v19 · 297개 상황 · 불투명 패널</div></body></html>
+</script><script>if(location.protocol==='https:'&&'serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script><script>(function(){const el=document.getElementById('teamTheme');const themes=['default','kt','samsung','kia','lg','doosan','ssg','hanwha','nc','lotte','kiwoom'];let saved='default';try{saved=localStorage.getItem('baseball-team-theme')||'default'}catch(e){}function apply(v){if(!themes.includes(v))v='default';el.value=v;document.body.dataset.team=v;const colors={default:'#091b1b',kt:'#08090b',samsung:'#061a40',kia:'#26090c',lg:'#f6f6f6',doosan:'#071327',ssg:'#29090d',hanwha:'#291509',nc:'#071626',lotte:'#071529',kiwoom:'#250915'};document.querySelector('meta[name="theme-color"]').setAttribute('content',colors[v]);try{localStorage.setItem('baseball-team-theme',v)}catch(e){}}el.addEventListener('change',()=>apply(el.value));apply(saved)})();</script><div id="themeVersionTag" style="text-align:center;padding:6px 0 14px;font-size:11px;color:#999">4단계 난이도 v22 · 297개 상황 · 불투명 패널</div></body></html>
