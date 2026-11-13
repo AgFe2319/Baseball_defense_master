@@ -395,7 +395,13 @@ const receiverChoices={P:['1P'],C:['HOME','TAG'], '1B':['1B','CUT1','1TOUCH'], '
 function touchFirstBase(){if(phase==='action'&&throwInputMode==='direct'&&holder==='1B'&&activeRoute[step]==='1TOUCH')chooseAction('1TOUCH');}
 function tapPlayer(id){
  if(phase==='field'){chooseFielder(id);return;}
+ if(phase==='home-tag'&&throwInputMode==='direct'&&id==='C'){finishHomeTag(true);return;}
  if(phase!=='action'||throwInputMode!=='direct')return;
+ // Home-rush grounders: tapping the catcher must use the same action as the HOME button.
+ if((sc.id>=31&&sc.id<=33||sc.homeDecision)&&holder==='P'&&step===0){
+   if(id==='C'){selectHomePlay('HOME');if(throwInputMode==='direct'&&mode==='intermediate')finishHomeTag(true);return;}
+   if(id==='1B'){selectHomePlay('1B');return;}
+ }
  if(holder==='1B'&&activeRoute[step]==='1TOUCH'){$('feedback').textContent='야수가 아닌 1루 베이스(노란색 강조)를 직접 눌러 주세요.';return;}
  const candidates=(receiverChoices[id]||[]).filter(a=>a!==undefined&&a!=='1TOUCH');
  if(!candidates.length){$('feedback').textContent=names[id]+'에게 송구하는 동작은 이 상황에 구현되어 있지 않습니다.';return;}
@@ -494,6 +500,7 @@ function alternatives(){if(sc.id===85&&step===0)return ['3B','2SS','CUTSS','HOLD
 function showActions(){if(step>=activeRoute.length){end(true,'지정된 수비 동작을 모두 수행했습니다.');return}/* 제한시간은 계속 표시 */
  document.body.classList.toggle('direct-active',throwInputMode==='direct');
  if(throwInputMode==='direct'){
+  if((sc.id>=31&&sc.id<=33||sc.homeDecision)&&holder==='P'&&step===0){$('prompt').textContent='투수 포구 완료 · 포수(홈 태그) 또는 1루수를 경기장에서 누르세요.';$('feedback').textContent='홈 쇄도 시 포수에게 송구하면 홈 태그 플레이로 연결됩니다.';actions([['↩ 초급(4지선다)으로 전환',()=>selectDifficulty('normal')]]);draw();return;}
   $('prompt').textContent=(step+1)+'번째 수비 · 공을 받을 야수를 경기장에서 누르세요.';
   $('feedback').textContent='현재 공을 가진 야수: '+names[holder]+(mode==='intermediate'?' · 받을 야수만 터치하면 송구 목적은 자동 처리됩니다.':' · 야수 터치 후 중계/베이스 커버 목적을 선택하세요.')+(cutoffAssignment()?' · '+names[cutoffAssignment().id]+'가 중계 위치로 이동합니다.':(sc.type==='ground' && directDefensivePositions().P?' · 투수가 1루 베이스로 이동해 송구를 받습니다.':sc.type==='ground' && directDefensivePositions()['2B']?' · 2루수가 2루 베이스를 커버합니다.':sc.type==='ground' && directDefensivePositions().SS?' · 유격수가 2루 베이스를 커버합니다.':'') );
   const extras=[];
