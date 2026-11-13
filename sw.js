@@ -1,4 +1,4 @@
-const CACHE='baseball-defense-master-v40-runner-consistency';
+const CACHE='baseball-defense-master-v43-white-outline';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('baseball-defense-master-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
