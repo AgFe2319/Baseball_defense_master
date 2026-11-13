@@ -218,7 +218,7 @@ for(const s of window.SCENARIOS){
   if(AI_REVIEW[s.id]){AI_REVIEW[s.id].judgment='재검토·조건부';AI_REVIEW[s.id].reason=why;AI_REVIEW[s.id].route=[...s.route];AI_REVIEW[s.id].timing='주자 위치, 타구 깊이, 야수의 송구 타이밍에 따라 복수 선택 허용';}
 }
 window.AUDIT_CHANGES=AUDIT_CHANGES;
-document.documentElement.dataset.gameVersion='v39';
+document.documentElement.dataset.gameVersion='v44';
 const S=window.SCENARIOS, names={P:'투수',C:'포수','1B':'1루수','2B':'2루수','3B':'3루수',SS:'유격수',LF:'좌익수',CF:'중견수',RF:'우익수'};
 S.forEach(x=>{const r=AI_REVIEW[String(x.id)];if(r){x.review=r;x.route=[...r.route];x.expected=r.expected;}});
 // v31 FINAL relay normalization: must run AFTER AI_REVIEW has overwritten routes.
@@ -315,14 +315,15 @@ function svg(tag,attrs,parent){const e=document.createElementNS(NS,tag);Object.e
 function actions(options){$('actions').replaceChildren();options.forEach(([txt,fn])=>{let b=document.createElement('button');b.className='btn';b.textContent=txt;b.onclick=fn;$('actions').append(b)})}
 function updateHeader(){ $('number').textContent=sc?'#'+sc.id:'—';$('outs').textContent=sc?sc.outs+outsMade:'—';$('bases').textContent=sc?(sc.bases.map(n=>n+'루').join('·')||'없음'):'—';$('score').textContent=score;}
 function draw(){['diamond','runnerDots','ball'].forEach(id=>$(id).replaceChildren());for(let i=0;i<4;i++){
- const p=bags[i],touchable=i===1&&phase==='action'&&throwInputMode==='direct'&&holder==='1B'&&activeRoute[step]==='1TOUCH';
- const g=svg('g',touchable?{role:'button',tabindex:0,'aria-label':'1루 베이스 터치',class:'base-touch-target'}:{},$('diamond'));
+ const p=bags[i],touchable=phase==='action'&&throwInputMode==='direct'&&((i===1&&holder==='1B'&&activeRoute[step]==='1TOUCH')||(i===3&&holder==='3B'&&activeRoute[step]==='3TOUCH'));
+ const touchLabel=i===3?'3루':'1루';
+ const g=svg('g',touchable?{role:'button',tabindex:0,'aria-label':touchLabel+' 베이스 터치',class:'base-touch-target'}:{},$('diamond'));
  if(touchable){svg('circle',{cx:p[0],cy:p[1],r:24,fill:'#facc15','fill-opacity':.22,stroke:'#f59e0b','stroke-width':2,'stroke-dasharray':'4 3'},g);
    svg('circle',{cx:p[0],cy:p[1],r:23,fill:'transparent','pointer-events':'all'},g);
-   g.onclick=()=>touchFirstBase();g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();touchFirstBase()}};
+   g.onclick=()=>touchDefensiveBase(i);g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();touchDefensiveBase(i)}};
  }
  svg('rect',{x:p[0]-7,y:p[1]-7,width:14,height:14,transform:`rotate(45 ${p[0]} ${p[1]})`,fill:'white',stroke:touchable?'#b45309':'#ddd','stroke-width':touchable?3:1,'pointer-events':touchable?'all':'none'},g);
- if(touchable){const txt=svg('text',{x:p[0],y:p[1]-31,'text-anchor':'middle','font-size':12,'font-weight':800,fill:'#facc15','pointer-events':'none'},g);txt.textContent='1루 터치';}
+ if(touchable){const txt=svg('text',{x:p[0],y:p[1]-31,'text-anchor':'middle','font-size':12,'font-weight':800,fill:'#facc15','pointer-events':'none'},g);txt.textContent=touchLabel+' 터치';}
  }
 // Keep the player SVG nodes stable while animating. Recreating them on every
 // animation frame can cancel a mobile tap between pointerdown and click.
@@ -392,7 +393,11 @@ function begin(){if(phase!=='preview')return;phase='field';$('preview').hidden=t
 function tick(now){if(!['field','catch','action','home-tag'].includes(phase))return;elapsed=(now-started)/1000;const total=10;const dur=sc.type==='fly'?3.5:sc.type==='hit'?2.8:2.2;if(phase==='field'){let t=Math.min(1,elapsed/dur),p=points[sc.fielder];ball=[180+(p[0]-180)*t,279+(p[1]-279)*t-(sc.type==='fly'?60*Math.sin(Math.PI*t):0)];draw();}const remain=Math.max(0,total-elapsed);$('clock').textContent='⏱ '+remain.toFixed(1)+'초';$('meter').style.width=(100*remain/total)+'%';if(elapsed>=total){end(false,'10초 제한시간 초과: 수비 판단을 완료하지 못했습니다.');return}raf=requestAnimationFrame(tick)}
 // v20: field-based throw control. Same game actions and scoring as the button mode.
 const receiverChoices={P:['1P'],C:['HOME','TAG'], '1B':['1B','CUT1','1TOUCH'], '2B':['2B','2BASE','CUT2'],SS:['2SS','CUTSS'], '3B':['3B','3BASE','3TOUCH']};
-function touchFirstBase(){if(phase==='action'&&throwInputMode==='direct'&&holder==='1B'&&activeRoute[step]==='1TOUCH')chooseAction('1TOUCH');}
+function touchDefensiveBase(base){
+ if(phase!=='action'||throwInputMode!=='direct')return;
+ if(base===1&&holder==='1B'&&activeRoute[step]==='1TOUCH')chooseAction('1TOUCH');
+ if(base===3&&holder==='3B'&&activeRoute[step]==='3TOUCH')chooseAction('3TOUCH');
+}
 // v41: use the SAME home-play path for every infielder when a non-forced
 // third-base runner is charging home. A base cover/throw is not an automatic out.
 function homeRushTagOpportunity(){
@@ -409,7 +414,7 @@ function tapPlayer(id){
    if(id==='C'){selectHomePlay('HOME');if(throwInputMode==='direct'&&mode==='intermediate')finishHomeTag(true);return;}
    if(id==='1B'){selectHomePlay('1B');return;}
  }
- if(holder==='1B'&&activeRoute[step]==='1TOUCH'){$('feedback').textContent='야수가 아닌 1루 베이스(노란색 강조)를 직접 눌러 주세요.';return;}
+ if((holder==='1B'&&activeRoute[step]==='1TOUCH')||(holder==='3B'&&activeRoute[step]==='3TOUCH')){$('feedback').textContent='야수가 아닌 경기장의 강조된 '+(holder==='3B'?'3루':'1루')+' 베이스를 직접 눌러 주세요.';return;}
  const candidates=(receiverChoices[id]||[]).filter(a=>a!==undefined&&a!=='1TOUCH');
  if(!candidates.length){$('feedback').textContent=names[id]+'에게 송구하는 동작은 이 상황에 구현되어 있지 않습니다.';return;}
  // Do not conflate a cutoff relay with a throw to a base cover player.
@@ -512,7 +517,7 @@ function showActions(){if(step>=activeRoute.length){end(true,'지정된 수비 �
   $('feedback').textContent='현재 공을 가진 야수: '+names[holder]+(mode==='intermediate'?' · 받을 야수만 터치하면 송구 목적은 자동 처리됩니다.':' · 야수 터치 후 중계/베이스 커버 목적을 선택하세요.')+(cutoffAssignment()?' · '+names[cutoffAssignment().id]+'가 중계 위치로 이동합니다.':(sc.type==='ground' && directDefensivePositions().P?' · 투수가 1루 베이스로 이동해 송구를 받습니다.':sc.type==='ground' && directDefensivePositions()['2B']?' · 2루수가 2루 베이스를 커버합니다.':sc.type==='ground' && directDefensivePositions().SS?' · 유격수가 2루 베이스를 커버합니다.':'') );
   const extras=[];
   const next=activeRoute[step];
-  if(next==='1TOUCH'&&holder==='1B'){$('prompt').textContent='1루수가 공을 잡았습니다. 경기장에 있는 1루 베이스를 직접 터치하세요.';$('feedback').textContent='노란색으로 강조된 1루 베이스를 누르면 베이스 터치 플레이로 판정합니다.';}else if(['1TOUCH','3TOUCH','TAG','HOLD','HOLD3'].includes(next))extras.push([label[next],()=>chooseAction(next)]);
+  if((next==='1TOUCH'&&holder==='1B')||(next==='3TOUCH'&&holder==='3B')){const base=next==='3TOUCH'?'3루':'1루';$('prompt').textContent=base+'수가 공을 잡았습니다. 경기장에 있는 '+base+' 베이스를 직접 터치하세요.';$('feedback').textContent='노란색으로 강조된 '+base+' 베이스를 누르면 베이스 터치 플레이로 판정합니다.';}else if(['1TOUCH','3TOUCH','TAG','HOLD','HOLD3'].includes(next))extras.push([label[next],()=>chooseAction(next)]);
   extras.push(['↩ 초급(4지선다)으로 전환',()=>selectDifficulty('normal')]);
   actions(extras);
  }else{
@@ -551,7 +556,7 @@ function chooseAction(a){if(phase!=='action')return;
 
  if(step===0&&isLoadedInfield()&&loadedFirstChoices().includes(a)){
   if(a==='HOME')activeRoute=['HOME','1B'];
-  else if(a==='3BASE')activeRoute=['3BASE','1B'];
+  else if(a==='3BASE')activeRoute=[sc.fielder==='3B'?'3TOUCH':'3BASE','1B'];
   else if(a==='2B'||a==='2SS')activeRoute=[a,'1B'];
   else activeRoute=['1B'];
   $('feedback').textContent='만루 수비: 선택한 첫 송구에 맞춰 후속 플레이가 변경됩니다.';
